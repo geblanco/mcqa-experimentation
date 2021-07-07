@@ -1,0 +1,104 @@
+schema: '2.0'
+stages:
+  format-quail-to-race@train:
+    cmd: src/etl/preprocess_quail_to_race.py data/quail/train.json data/quail/train_answers.json
+      -o data/quail_race_fmt/train.json
+    deps:
+    - path: data/quail/train.json
+      md5: 5409940d9b8479dc51fe56c9b5607344
+      size: 4498702
+    - path: data/quail/train_answers.json
+      md5: c1b17d1e9bb8bbce4b28c253e5167001
+      size: 199358
+    - path: src/etl/preprocess_quail_to_race.py
+      md5: 2009306154dd6e92058826b7032328bb
+      size: 3355
+    outs:
+    - path: data/quail_race_fmt/train.json
+      md5: 6c67d6a9e3c054cf471ef467fbf23e26
+      size: 2863957
+  format-quail-to-race@dev:
+    cmd: src/etl/preprocess_quail_to_race.py data/quail/dev.json data/quail/dev_answers.json
+      -o data/quail_race_fmt/dev.json
+    deps:
+    - path: data/quail/dev.json
+      md5: 710c954716143d6d3c8c2ef2044f5c0c
+      size: 955449
+    - path: data/quail/dev_answers.json
+      md5: 1665e633ee7aa0183a45a3749e4e061b
+      size: 46710
+    - path: src/etl/preprocess_quail_to_race.py
+      md5: 2009306154dd6e92058826b7032328bb
+      size: 3355
+    outs:
+    - path: data/quail_race_fmt/dev.json
+      md5: b2573225520d6ae103b7b1f899ebd433
+      size: 611156
+  format-quail-no-empty-answers@dev:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/quail_race_fmt -o data/quail_no_empty_answers
+      -s dev --no_answer_text "not enough information" --keep_matching_text --index_list_path
+      data/quail_no_empty_answers/dev_index_list.json
+    deps:
+    - path: data/quail_race_fmt
+      md5: 96f33684356371185c1fb8ee7b5c490b.dir
+      size: 3475135
+      nfiles: 3
+    - path: src/etl/choices/reformat_dataset.py
+      md5: e8e3c8d3f5afcfc5c8c9fda62296ac7d
+      size: 4721
+    outs:
+    - path: data/quail_no_empty_answers/dev.json
+      md5: 0527f4f70f20380b3eb7b506c063a7d8
+      size: 554890
+    - path: data/quail_no_empty_answers/dev_index_list.json
+      md5: df9910f3a043308666bffbeb9fcebe5e
+      size: 30297
+  format-quail-no-empty-answers-removed@dev:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/quail_race_fmt -o data/quail_empty_answers_removed
+      -s dev --no_answer_text "not enough information"
+    deps:
+    - path: data/quail_race_fmt
+      md5: 96f33684356371185c1fb8ee7b5c490b.dir
+      size: 3475135
+      nfiles: 3
+    - path: src/etl/choices/reformat_dataset.py
+      md5: e8e3c8d3f5afcfc5c8c9fda62296ac7d
+      size: 4721
+    outs:
+    - path: data/quail_empty_answers_removed/dev.json
+      md5: e8c4ed4ea82859767ebbdd4bcec51d3f
+      size: 524048
+  format-quail-no-empty-answers-removed@train:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/quail_race_fmt -o data/quail_empty_answers_removed
+      -s train --no_answer_text "not enough information"
+    deps:
+    - path: data/quail_race_fmt
+      md5: 96f33684356371185c1fb8ee7b5c490b.dir
+      size: 3475135
+      nfiles: 3
+    - path: src/etl/choices/reformat_dataset.py
+      md5: e8e3c8d3f5afcfc5c8c9fda62296ac7d
+      size: 4721
+    outs:
+    - path: data/quail_empty_answers_removed/train.json
+      md5: d3a6f28fa96f7431cee0ec4aa4193105
+      size: 2451755
+  format-quail-no-empty-answers@train:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/quail_race_fmt -o data/quail_no_empty_answers
+      -s train --no_answer_text "not enough information" --keep_matching_text --index_list_path
+      data/quail_no_empty_answers/train_index_list.json
+    deps:
+    - path: data/quail_race_fmt
+      md5: 96f33684356371185c1fb8ee7b5c490b.dir
+      size: 3475135
+      nfiles: 3
+    - path: src/etl/choices/reformat_dataset.py
+      md5: e8e3c8d3f5afcfc5c8c9fda62296ac7d
+      size: 4721
+    outs:
+    - path: data/quail_no_empty_answers/train.json
+      md5: 936468445f9be0ea4cc8257a790ab01c
+      size: 2597559
+    - path: data/quail_no_empty_answers/train_index_list.json
+      md5: 7572b57eb9b20aa514df7af7137d5b7b
+      size: 143445

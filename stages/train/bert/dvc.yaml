@@ -13,11 +13,11 @@ stages:
       # avoid cycles
       - data/${item.data}/${item.files[0]}
       - data/${item.data}/${item.files[1]}
-      params:
-      - params/${key}-params.yaml:train
+        # params:
+        # - ../../../params/${key}-params.yaml:train
       outs:
-      - data/${item.data}/cached_train_BertTokenizer_484_race
-      - data/${item.data}/cached_train_BertTokenizer_484_race.lock
+        # - data/${item.data}/cached_train_BertTokenizer_484_race
+        # - data/${item.data}/cached_train_BertTokenizer_484_race.lock
       - data/models/bert-train-${key}/config.json
       - data/models/bert-train-${key}/pytorch_model.bin
       - data/models/bert-train-${key}/special_tokens_map.json

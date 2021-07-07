@@ -5,7 +5,7 @@ train-models:
       - train.json
       - dev.json
   quail-no-empty-answers:
-    data: no_empty_answers
+    data: quail_no_empty_answers
     files:
       - train.json
       - dev.json
