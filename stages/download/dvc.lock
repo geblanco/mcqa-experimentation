@@ -1,0 +1,54 @@
+schema: '2.0'
+stages:
+  dl-race:
+    cmd: src/etl/dl_race.sh
+    deps:
+    - path: src/etl/dl_race.sh
+      md5: 66aa5212d0687e98ca1c0b6e6ee8d5ec
+      size: 180
+    outs:
+    - path: data/RACE/dev
+      md5: 1be4be7086bef61408432e677c5056d0.dir
+      size: 3308878
+      nfiles: 1389
+    - path: data/RACE/test
+      md5: d04fc25fbac6952abca0d72aa7a7a45e.dir
+      size: 3368243
+      nfiles: 1407
+    - path: data/RACE/train
+      md5: 22be488af9b6b86c28e4f0423670272f.dir
+      size: 60493414
+      nfiles: 25137
+  dl-models:
+    cmd: python src/etl/dl_models.py -m bert-base-uncased --overwrite
+    deps:
+    - path: src/etl/dl_models.py
+      md5: c2ca665ea793afe968fff649f0e04717
+      size: 2452
+    outs:
+    - path: data/models/bert-base-uncased
+      md5: 40f474d45508322b45273ef7f0945226.dir
+      size: 438245493
+      nfiles: 5
+  dl-quail:
+    cmd: src/etl/dl_quail.sh
+    deps:
+    - path: src/etl/dl_quail.sh
+      md5: 35c895bd0b066481c8f7fba6dd57a0cb
+      size: 824
+    outs:
+    - path: data/quail/dev.json
+      md5: 710c954716143d6d3c8c2ef2044f5c0c
+      size: 955449
+    - path: data/quail/dev_answers.json
+      md5: 1665e633ee7aa0183a45a3749e4e061b
+      size: 46710
+    - path: data/quail/eval.py
+      md5: cab53a1ed0c7248b036be788fa60ec3c
+      size: 1446
+    - path: data/quail/train.json
+      md5: 5409940d9b8479dc51fe56c9b5607344
+      size: 4498702
+    - path: data/quail/train_answers.json
+      md5: c1b17d1e9bb8bbce4b28c253e5167001
+      size: 199358
