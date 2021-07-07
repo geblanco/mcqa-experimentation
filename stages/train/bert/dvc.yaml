@@ -6,9 +6,14 @@ stages:
     foreach: ${train-models}
     do:
       wdir: ../../..
-      cmd: src/processing/run.sh data/specs/bert-train_experiment.json
+      cmd: src/processing/run.sh params/model-params.yaml:${key}.train --data_dir "data/${key}"
+        --model_name_or_path "data/models/${item.model}"
+        --output_dir "data/models/bert-train-${key}"
+        --metrics_dir "data/metrics/bert-train-${key}"
+        --results_dir "data/results/bert-train-${key}"
+        --cache_dir "/tmp"
       deps:
-      - data/models/bert-base-uncased
+      - data/models/${item.model}
       - src/processing/run.sh
       # avoid cycles
       - data/${item.data}/${item.files[0]}
@@ -32,3 +37,4 @@ stages:
       metrics:
       - data/metrics/bert-train-${key}/eval_metrics.json
       - data/metrics/bert-train-${key}/train_metrics.json
+

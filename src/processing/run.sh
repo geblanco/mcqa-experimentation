@@ -21,7 +21,7 @@ run_experiment(){
     inside_docker="nvidia-docker run --rm ${docker_args[@]}"
   fi
   echo "$PWD"
-  ${inside_docker} ${script_file} $(python3 $json_as_args -f $file)
+  ${inside_docker} ${script_file} $(python3 $file_as_args -f $file)
 }
 
 get_experiments(){
@@ -51,23 +51,12 @@ ch_to_project_root(){
 ch_to_project_root
 docker_img="quail-experiments-v2"
 docker_args="--shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 -v `pwd`:/workspace -v /data:/data $docker_img"
-json_as_args="./src/processing/json_to_program_args.py -e params -x meta model_type"
+file_as_args="./src/processing/file_to_program_args.py"
 
 echo "###### Starting experiments $(date)"
 total_start_time=$(date -u +%s)
-
-experiments=()
-get_experiments $@
-echo "* Total experiments:"
-echo "* ${experiments[@]}"
-
-for raw_exp in ${experiments[@]}; do
-  exp=$(fix_experiment_path $raw_exp)
-  echo "*********** $exp *************";
-  run_experiment $exp
-  echo "********************************";
-done
-
+# echo $(python3 $file_as_args $@)
+mc_transformers $(python3 $file_as_args $@)
 total_end_time=$(date -u +%s)
 total_elapsed=$(python3 -c "print('{:.2f}'.format(($total_end_time - $total_start_time)/60.0 ))")
 echo "###### End of experiments $(date) ($total_elapsed) minutes"
