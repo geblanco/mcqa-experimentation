@@ -1,0 +1,33 @@
+vars:
+  - ../../../params/models.yaml
+
+stages:
+  bert-train:
+    foreach: ${train-models}
+    do:
+      wdir: ../../..
+      cmd: src/processing/run.sh data/specs/bert-train_experiment.json
+      deps:
+      - data/models/bert-base-uncased
+      - src/processing/run.sh
+      # avoid cycles
+      - data/${item.data}/${item.files[0]}
+      - data/${item.data}/${item.files[1]}
+      params:
+      - params/${key}-params.yaml:train
+      outs:
+      - data/${item.data}/cached_train_BertTokenizer_484_race
+      - data/${item.data}/cached_train_BertTokenizer_484_race.lock
+      - data/models/bert-train-${key}/config.json
+      - data/models/bert-train-${key}/pytorch_model.bin
+      - data/models/bert-train-${key}/special_tokens_map.json
+      - data/models/bert-train-${key}/tokenizer_config.json
+      - data/models/bert-train-${key}/training_args.bin
+      - data/models/bert-train-${key}/vocab.txt
+      - data/results/bert-train-${key}/train_nbest_predictions.json
+      - data/results/bert-train-${key}/train_predictions.json
+      - data/results/bert-train-${key}/eval_nbest_predictions.json
+      - data/results/bert-train-${key}/eval_predictions.json
+      metrics:
+      - data/metrics/bert-train-${key}/eval_metrics.json
+      - data/metrics/bert-train-${key}/train_metrics.json

@@ -1,0 +1,40 @@
+vars:
+  - ../../params/datasets.yaml
+
+stages:
+  format-quail-to-race:
+    foreach: ${quail.splits}
+    do:
+      wdir: ../..
+      cmd: src/etl/preprocess_quail_to_race.py data/quail/${item.data} data/quail/${item.answers}
+        -o data/${quail.transform.output}/${item.data}
+      deps:
+      - data/quail/${item.data}
+      - data/quail/${item.answers}
+      - src/etl/preprocess_quail_to_race.py
+      outs:
+      - data/${quail.transform.output}/${item.data}
+  format-quail-no-empty-answers:
+    foreach: ${quail.splits}
+    do:
+      wdir: ../..
+      cmd: python src/etl/choices/reformat_dataset.py -d data/${quail.transform.output} -o data/quail_no_empty_answers
+        -s ${key} --no_answer_text "${quail.no_answer_text}" --keep_matching_text --index_list_path
+        data/quail_no_empty_answers/${key}_index_list.json
+      deps:
+      - data/${quail.transform.output}
+      - src/etl/choices/reformat_dataset.py
+      outs:
+      - data/quail_no_empty_answers/${item.data}
+      - data/quail_no_empty_answers/${key}_index_list.json
+  format-quail-no-empty-answers-removed:
+    foreach: ${quail.splits}
+    do:
+      wdir: ../..
+      cmd: python src/etl/choices/reformat_dataset.py -d data/${quail.transform.output} -o data/quail_empty_answers_removed
+        -s ${key} --no_answer_text "${quail.no_answer_text}"
+      deps:
+      - data/${quail.transform.output}
+      - src/etl/choices/reformat_dataset.py
+      outs:
+      - data/quail_empty_answers_removed/${key}.json

@@ -1,0 +1,8 @@
+ToDo :=
+- Check difference between no empty answers and empty answers removed
+- Fix training program to accept param files, inheritance of params?... Having repeated keys would avoid inheritance. 
+- Unify evaluation stages (bert-eval-noea-std-quail)
+- Params extraction from file in extract_embeddings (do by specific params.yaml)
+- Extract embeddings: where does data come frome? State as arg
+- Separate things by stages and use wdir.
+

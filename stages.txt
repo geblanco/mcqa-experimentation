@@ -1,0 +1,17 @@
+Dataset stages:
+- dl dataset
+- [transformation]
+- train model
+===
+- extract embeddings opt.1 (train embeddings)
+- extract embeddings opt.2 (dev embeddings)
+- extract lengths opt.1 (train lengths)
+- extract lengths opt.2 (dev lengths)
+- normalize embeddings opt.1
+- normalize embeddings opt.2
+- merge embeddings and lengths opt.1
+- merge embeddings and lengths opt.2
+- classification
+- classifier evaluation opt.1 (over train set)
+- classifier evaluation opt.2 (over dev set)
+- model correction

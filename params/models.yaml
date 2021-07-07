@@ -1,0 +1,16 @@
+train-models:
+  quail:
+    data: quail_race_fmt
+    files:
+      - train.json
+      - dev.json
+  quail-no-empty-answers:
+    data: no_empty_answers
+    files:
+      - train.json
+      - dev.json
+  race:
+    data: RACE
+    files:
+      - train
+      - dev

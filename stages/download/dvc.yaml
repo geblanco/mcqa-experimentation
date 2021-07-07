@@ -1,0 +1,28 @@
+stages:
+  dl-quail:
+    wdir: ../..
+    cmd: src/etl/dl_quail.sh
+    deps:
+    - src/etl/dl_quail.sh
+    outs:
+    - data/quail/dev.json
+    - data/quail/dev_answers.json
+    - data/quail/eval.py
+    - data/quail/train.json
+    - data/quail/train_answers.json
+  dl-race:
+    wdir: ../..
+    cmd: src/etl/dl_race.sh
+    deps:
+    - src/etl/dl_race.sh
+    outs:
+    - data/RACE/train
+    - data/RACE/dev
+    - data/RACE/test
+  dl-models:
+    wdir: ../..
+    cmd: python src/etl/dl_models.py -m bert-base-uncased --overwrite
+    deps:
+    - src/etl/dl_models.py
+    outs:
+    - data/models/bert-base-uncased
