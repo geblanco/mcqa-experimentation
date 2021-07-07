@@ -14,7 +14,8 @@ stages:
       - data/${item.data}/${item.files[0]}
       - data/${item.data}/${item.files[1]}
       params:
-      - ${key}.train
+      - params/model-params.yaml:
+        - ${key}.train
       outs:
         # - data/${item.data}/cached_train_BertTokenizer_484_race
         # - data/${item.data}/cached_train_BertTokenizer_484_race.lock
