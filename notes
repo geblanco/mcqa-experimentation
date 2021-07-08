@@ -5,4 +5,4 @@ ToDo :=
 - Params extraction from file in extract_embeddings (do by specific params.yaml)
 - Extract embeddings: where does data come frome? State as arg
 - Separate things by stages and use wdir.
-
+- Use a better model, ALBERT-v2-xlarge,xxlarge produce among the best results on RACE.
