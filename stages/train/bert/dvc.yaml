@@ -6,7 +6,8 @@ stages:
     foreach: ${train-models}
     do:
       wdir: ../../..
-      cmd: src/processing/run.sh params/model-params.yaml:${key}.train --data_dir "data/${key}"
+      cmd: src/processing/run.sh params/model-params.yaml:${key}.train
+        --data_dir "data/${item.data}"
         --model_name_or_path "data/models/${item.model}"
         --output_dir "data/models/bert-train-${key}"
         --metrics_dir "data/metrics/bert-train-${key}"
