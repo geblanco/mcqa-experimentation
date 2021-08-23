@@ -7,12 +7,15 @@ stages:
     foreach: ${data}
     do:
       wdir: ../..
-      cmd: python src/etl/embeddings/extract/extract_embeddings.py -s ${item.split} --args_file
-        ${item.params_file} --extract ${item.split} --scatter_dataset -o /data/gblanco/datasets/embeddings/${key}
+      cmd: python src/etl/embeddings/extract/extract_embeddings.py -s ${item.split}
+        --args_file params/model-params.yaml:${key}.${item.split}
+        --extract ${item.split}
+        --scatter_dataset
+        -o /data/gblanco/datasets/embeddings/${key}
       deps:
       - data/models/${item.model}
       - data/${item.data}
-      - ${item.params_file}
+      - params/model-params.yaml:${key}.${item.split}
       - src/etl/embeddings/extract/extract_embeddings.py
       outs:
       - /data/gblanco/datasets/embeddings/${key}/embeddings
@@ -21,12 +24,12 @@ stages:
     do:
       wdir: ../..
       cmd: python src/etl/embeddings/extract/extract_lengths.py -d data/${item.data} -s ${item.split}
-        -t ${item.task} -o /data/gblanco/datasets/embeddings/${key}/${item.split}_text_lengths
+        -t ${item.task} -o /data/gblanco/datasets/embeddings/${key}/text_lengths
       deps:
       - data/${item.data}
       - src/etl/embeddings/extract/extract_lengths.py
       outs:
-      - /data/gblanco/datasets/embeddings/${key}/${item.split}_text_lengths_data.pkl
+      - /data/gblanco/datasets/embeddings/${key}/text_lengths_data.pkl
   normalize:
     foreach: ${data}
     do:
@@ -43,12 +46,12 @@ stages:
     do:
       wdir: ../..
       cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e /data/gblanco/datasets/embeddings/${key}/normalized_embeddings
-        -d /data/gblanco/datasets/embeddings/${key}/${item.split}_text_lengths_data.pkl
+        -d /data/gblanco/datasets/embeddings/${key}/text_lengths_data.pkl
         -o /data/gblanco/datasets/embeddings/${key}/normalized_embeddings_with_lengths
         --scatter_dataset
       deps:
       - /data/gblanco/datasets/embeddings/${key}/normalized_embeddings
-      - /data/gblanco/datasets/embeddings/${key}/${item.split}_text_lengths_data.pkl
+      - /data/gblanco/datasets/embeddings/${key}/text_lengths_data.pkl
       - src/etl/embeddings/transform/merge_embeddings_and_lengths.py
       outs:
       - /data/gblanco/datasets/embeddings/${key}/normalized_embeddings_with_lengths

@@ -3,35 +3,29 @@ data:
     data: quail-race-fmt
     model: bert-train-quail
     split: train
-    params_file: quail-params.yaml
     task: generic
   quail-dev:
     data: quail-race-fmt
     model: bert-train-quail
     split: dev
-    params_file:  quail-params.yaml
     task:  generic
   quail-no-empty-answers-train:
     data: quail_no_empty_answers
     model: bert-train-quail-no-empty-answers
     split: train
-    params_file: quail-no-empty-answers-params.yaml
-    task: quail-no-empty-generic
+    task: generic
   quail-no-empty-answers-dev:
     data: quail_no_empty_answers
     model: bert-train-quail-no-empty-answers
     split: dev
-    params_file: quail-no-empty-answers-params.yaml
-    task: quail-no-empty-generic
+    task: generic
   race-train:
     data: RACE
     model: bert-train-race
     split: train
-    params_file: race-params.yaml
     task: race
   race-dev:
     data: RACE
     model: bert-train-race
     split: dev
-    params_file: race-params.yaml
     task: race

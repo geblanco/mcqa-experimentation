@@ -1,0 +1,27 @@
+classification:
+    iterations: 200
+    popsize: 10
+    selection: 10
+    early_stop: 6
+    balanced: false
+    memory: 64
+    autogoal: false
+    pipeline: mlp
+    sweep_features: false
+    seed: 42
+    test_size: 0.2
+    metric: weighted_f1
+    multi_layer:
+        lr: 0.001
+        epochs: 100
+        batch_size: 200
+features:
+    normalization: false
+    oversample: false
+    embeddings: false
+    logits: true
+    contexts: false
+    question: false
+    endings: false
+hyper-search:
+    iterations: 2000

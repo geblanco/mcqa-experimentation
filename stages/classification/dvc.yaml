@@ -1,0 +1,25 @@
+vars:
+  - ../../params/extract.yaml
+
+stages:
+  classification:
+    foreach: ${data}
+    do:
+      wdir: ../..
+      cmd: python src/etl/embeddings/classify/classification.py
+        -d /data/gblanco/datasets/embeddings/${key}
+        -o /data/gblanco/results/${key}
+        --metrics_dir data/metrics/classification/${key}
+        --train --eval
+      deps:
+      - /data/gblanco/datasets/embeddings/${key}
+      - src/etl/embeddings/classify/classification.py
+      params:
+      - ../../params/classification-params.yaml:features,classification
+      outs:
+      - /data/gblanco/results/${key}
+      metrics:
+      - data/metrics/classification/${key}/scores.json:
+          cache: false
+
+# ToDo := Hyper parameter search, correct model with classifier, evaluate results
