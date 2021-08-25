@@ -47,9 +47,9 @@ data:
     params-key: race
     strategy: "no_answer"
     no_answer_text: "not enough information"
-    task: race
+    task: generic
     data: race_with_empty_answers
     model: bert-base-uncased
     files:
-      - train
-      - dev
+      - train.json
+      - dev.json

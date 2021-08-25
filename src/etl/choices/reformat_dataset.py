@@ -199,11 +199,11 @@ def mask_dataset(
         )
 
     dataset = Dataset(data_path=data_path, task=task)
-    gold_answers = dataset.get_gold_answers(split, with_text_values=True)
-    num_samples = round(len(gold_answers) * proportion)
-    mask_indices = random_indices(gold_answers, num_samples)
+    examples = dataset.get_split(split, with_text_values=True)
+    num_samples = round(len(examples) * proportion)
+    mask_indices = random_indices(examples, num_samples)
     masked_dataset = apply_mask(
-        gold_answers, mask_indices,
+        examples, mask_indices,
         mask_correct=mask_correct, mask_text=no_answer_text
     )
     dump_examples(dataset, masked_dataset, output_dir, split)

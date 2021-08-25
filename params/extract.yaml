@@ -33,9 +33,9 @@ data:
     data: race_with_empty_answers
     model: bert-train-race-with-empty-answers
     split: train
-    task: race
+    task: generic
   race-with-empty-answers-dev:
     data: race_with_empty_answers
     model: bert-train-race-with-empty-answers
     split: dev
-    task: race
+    task: generic

@@ -37,7 +37,7 @@ entry_points:
     command: "mcqa_utils
       -d {dataset}
       -n {nbest_predictions}
-     --task {output}
+     --task {task}
      -o {task}
      -m C_at_1 avg
      --save_mlflow"

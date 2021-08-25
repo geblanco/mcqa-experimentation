@@ -30,7 +30,7 @@ stages:
     do:
       wdir: ../..
       cmd: python src/etl/choices/reformat_dataset.py -d data/RACE/ -o data/${race.transform.output}
-        -s ${key} --no_answer_text "${race.no_answer_text}" --task race --mask --mask_correct --proportions 0.25
+        -s ${key} --no_answer_text "${race.no_answer_text}" --task race --mask --mask_correct --proportion 0.25
       deps:
       - data/RACE/${item.data}
       - src/etl/choices/reformat_dataset.py
