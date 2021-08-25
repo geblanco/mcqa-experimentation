@@ -1,18 +1,54 @@
-train-models:
+data:
   quail:
+    classification_split: dev
+    classification_embeddings: quail-train
+    corrections_embeddings: quail-dev
+    params-key: quail
+    strategy: "no_answer"
+    no_answer_text: "not enough information"
+    task: generic
     data: quail_race_fmt
     model: bert-base-uncased
     files:
       - train.json
       - dev.json
   quail-no-empty-answers:
+    classification_split: dev
+    classification_embeddings: quail-no-empty-answers-train
+    corrections_embeddings: quail-no-empty-answers-dev
+    params-key: quail
+    strategy: "empty_answer"
+    # unnecessary, just for completness
+    no_answer_text: "not enough information"
+    task: generic
     data: quail_no_empty_answers
     model: bert-base-uncased
     files:
       - train.json
       - dev.json
   race:
+    classification_split: dev
+    classification_embeddings: race-train
+    corrections_embeddings: race-dev
+    params-key: race
+    strategy: "empty_answer"
+    # unnecessary, just for completness
+    no_answer_text: "not enough information"
+    task: race
     data: RACE
+    model: bert-base-uncased
+    files:
+      - train
+      - dev
+  race-with-empty-answers:
+    classification_split: dev
+    classification_embeddings: race-with-empty-answers-train
+    corrections_embeddings: race-with-empty-answers-dev
+    params-key: race
+    strategy: "no_answer"
+    no_answer_text: "not enough information"
+    task: race
+    data: race_with_empty_answers
     model: bert-base-uncased
     files:
       - train

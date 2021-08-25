@@ -24,4 +24,32 @@ features:
     question: false
     endings: false
 hyper-search:
-    iterations: 2000
+    grid:
+        - pipeline: mlp
+          logits: true
+        - pipeline: mlp
+          logits: true
+          endings: true
+        - pipeline: mlp
+          logits: true
+          question: true
+        - pipeline: logreg
+          contexts: true
+        - pipeline: mlp
+          contexts: true
+          question: true
+        - pipeline: mlp
+          embeddings: true
+          logits: true
+          endings: true
+        - pipeline: mlp
+          logits: true
+          question: true
+          endings: true
+        - pipeline: mlp
+          contexts: true
+          endings: true
+        - pipeline: mlp
+          contexts: true
+          question: true
+          endings: true

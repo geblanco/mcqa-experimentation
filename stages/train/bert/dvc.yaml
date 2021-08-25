@@ -3,10 +3,10 @@ vars:
 
 stages:
   bert-train:
-    foreach: ${train-models}
+    foreach: ${data}
     do:
       wdir: ../../..
-      cmd: src/processing/run.sh params/model-params.yaml:${key}.train
+      cmd: src/processing/run.sh params/model-params.yaml:${item.params-key}.train
         --data_dir "data/${item.data}"
         --model_name_or_path "data/models/${item.model}"
         --output_dir "data/models/bert-train-${key}"
@@ -21,7 +21,7 @@ stages:
       - data/${item.data}/${item.files[1]}
       params:
       - params/model-params.yaml:
-        - ${key}.train
+        - ${item.params-key}.train
       outs:
         # - data/${item.data}/cached_train_BertTokenizer_484_race
         # - data/${item.data}/cached_train_BertTokenizer_484_race.lock

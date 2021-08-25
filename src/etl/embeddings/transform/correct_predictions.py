@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import mlflow
 import random
 import argparse
 import numpy as np
@@ -285,6 +286,7 @@ def main(
         f"original_{prefix}_predictions": predictions,
     }
     save_predictions(output_dir, **save_dict)
+    mlflow.log_artifact(output_dir)
 
 
 if __name__ == "__main__":

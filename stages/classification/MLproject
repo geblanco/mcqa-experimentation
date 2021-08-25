@@ -1,0 +1,72 @@
+name: hyperparam-search
+entry_points:
+  # Step for model training
+  classification:
+    parameters:
+      embeddings_path: path
+      classifier_dir: path
+      metrics_dir: path
+    command: "python src/etl/embeddings/classify/classification.py
+      -d {embeddings_path}
+      -o {classifier_dir}
+      --metrics_dir {metrics_dir}
+      --train --eval"
+  classifier_corrects_model:
+    parameters:
+      classifier_dir: path
+      embeddings_path: path
+      output_dir: path
+      dataset: path
+      split: string
+      strategy: string
+      no_answer_text: string
+    command: "python src/etl/embeddings/transform/correct_predictions.py
+      -c {classifier_dir}
+      -e {embeddings_path}
+      -o {output_dir}
+      -d {dataset}
+      -s {split}
+      --strategy {strategy}
+      --no_answer_text {no_answer_text}"
+  evaluate_corrections:
+    parameters:
+      dataset: path
+      nbest_predictions: path
+      output: path
+      task: {type: string, default: "generic"}
+    command: "mcqa_utils
+      -d {dataset}
+      -n {nbest_predictions}
+     --task {output}
+     -o {task}
+     -m C_at_1 avg
+     --save_mlflow"
+  main:
+    parameters:
+      classifier_dir: path
+      dataset: path
+      params_file: path
+      classification_embeddings_path: path
+      classification_metrics_dir: path
+      corrections_embeddings_path: path
+      corrections_output_dir: path
+      corrections_split: string
+      corrections_strategy: string
+      corrections_no_answer_text: string
+      evaluation_nbest_predictions: path
+      evaluation_output: path
+      evaluation_task: string
+    command: "python search.py
+      --classifier_dir {classifier_dir}
+      --dataset {dataset}
+      --params_file {params_file}
+      --classification_embeddings_path {classification_embeddings_path}
+      --classification_metrics_dir {classification_metrics_dir}
+      --corrections_embeddings_path {corrections_embeddings_path}
+      --corrections_output_dir {corrections_output_dir}
+      --corrections_split {corrections_split}
+      --corrections_strategy {corrections_strategy}
+      --corrections_no_answer_text {corrections_no_answer_text}
+      --evaluation_nbest_predictions {evaluation_nbest_predictions}
+      --evaluation_output {evaluation_output}
+      --evaluation_task {evaluation_task}"

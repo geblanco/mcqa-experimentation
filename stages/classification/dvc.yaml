@@ -1,25 +1,29 @@
 vars:
-  - ../../params/extract.yaml
-
+  - ../../params/models.yaml
 stages:
   classification:
     foreach: ${data}
     do:
       wdir: ../..
-      cmd: python src/etl/embeddings/classify/classification.py
-        -d /data/gblanco/datasets/embeddings/${key}
-        -o /data/gblanco/results/${key}
-        --metrics_dir data/metrics/classification/${key}
-        --train --eval
+      cmd: mlflow run -e main -P
+        --classifier_dir /data/gblanco/classification/${key}
+        --dataset data/${item.data}
+        --params_file params/classification-params.yaml
+        --classification_embeddings_path /data/gblanco/datasets/embeddings/${item.classification_embeddings}
+        --classification_metrics_dir data/metrics/classification/${key}
+        --corrections_embeddings_path /data/gblanco/datasets/embeddings/${item.corrections_embeddings}
+        --corrections_classifier_path /data/gblanco/classification/${key}
+        --corrections_output_dir data/metrics/model_corrections/${key}
+        --corrections_split ${item.classification_split}
+        --corrections_strategy ${item.strategy}
+        --corrections_no_answer_text ${item.no_answer_text}
+        --evaluation_nbest_predictions data/metrics/model_corrections/${key}/eval_nbest_predictions.json
+        --evaluation_output data/metrics/model_corrections/${key}/scores.json
+        --evaluation_task ${item.task}
       deps:
       - /data/gblanco/datasets/embeddings/${key}
+      - data/${item.data}
       - src/etl/embeddings/classify/classification.py
+      - src/etl/embeddings/transform/correct_predictions.py
       params:
-      - ../../params/classification-params.yaml:features,classification
-      outs:
-      - /data/gblanco/results/${key}
-      metrics:
-      - data/metrics/classification/${key}/scores.json:
-          cache: false
-
-# ToDo := Hyper parameter search, correct model with classifier, evaluate results
+      - ../../params/classification-params.yaml:features,classification,hyper-search

@@ -1,0 +1,22 @@
+quail:
+  no_answer_text: "not enough information"
+  splits:
+    train:
+      data: train.json
+      answers: train_answers.json
+    dev:
+      data: dev.json
+      answers: dev_answers.json
+  format:
+    output: quail_race_fmt
+  transform:
+    output: quail_no_empty_answers
+race:
+  no_answer_text: "not enough information"
+  splits:
+    train:
+      data: train
+    dev:
+      data: dev
+  transform:
+    output: race_with_empty_answers

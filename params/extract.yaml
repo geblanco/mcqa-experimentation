@@ -1,11 +1,11 @@
 data:
   quail-train:
-    data: quail-race-fmt
+    data: quail_race_fmt
     model: bert-train-quail
     split: train
     task: generic
   quail-dev:
-    data: quail-race-fmt
+    data: quail_race_fmt
     model: bert-train-quail
     split: dev
     task:  generic
@@ -27,5 +27,15 @@ data:
   race-dev:
     data: RACE
     model: bert-train-race
+    split: dev
+    task: race
+  race-with-empty-answers-train:
+    data: race_with_empty_answers
+    model: bert-train-race-with-empty-answers
+    split: train
+    task: race
+  race-with-empty-answers-dev:
+    data: race_with_empty_answers
+    model: bert-train-race-with-empty-answers
     split: dev
     task: race

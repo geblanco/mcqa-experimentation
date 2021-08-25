@@ -33,7 +33,7 @@ def parse_flags():
     parser.add_argument(
         '--keep_matching_text', action='store_true',
         help='Whether to keep the examples with the answer matching the given'
-        ' the given text (default is to remove those examples)'
+        ' text (default is to remove those examples)'
     )
     return parser.parse_args()
 
