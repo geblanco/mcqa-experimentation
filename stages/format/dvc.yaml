@@ -33,7 +33,7 @@ stages:
         -s ${key} --no_answer_text "${race.no_answer_text}" --task race --mask --proportion 0.0
       deps:
       - data/RACE/${item.orig_data}
-      - src/etl/reformat_dataset.py
+      - src/etl/choices/reformat_dataset.py
       outs:
       - data/${race.format.output}/${item.data}
   format-race-with-empty-answers:
