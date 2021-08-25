@@ -55,8 +55,8 @@ file_as_args="./src/processing/file_to_program_args.py"
 
 echo "###### Starting experiments $(date)"
 total_start_time=$(date -u +%s)
-# echo $(python3 $file_as_args $@)
-mc_transformers $(python3 $file_as_args $@)
+echo $(python3 $file_as_args $@)
+# mc_transformers $(python3 $file_as_args $@)
 total_end_time=$(date -u +%s)
 total_elapsed=$(python3 -c "print('{:.2f}'.format(($total_end_time - $total_start_time)/60.0 ))")
 echo "###### End of experiments $(date) ($total_elapsed) minutes"

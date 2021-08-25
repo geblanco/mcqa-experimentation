@@ -36,23 +36,19 @@ stages:
       size: 611156
   format-quail-no-empty-answers@dev:
     cmd: python src/etl/choices/reformat_dataset.py -d data/quail_race_fmt -o data/quail_no_empty_answers
-      -s dev --no_answer_text "not enough information" --keep_matching_text --index_list_path
-      data/quail_no_empty_answers/dev_index_list.json
+      -s dev --no_answer_text "not enough information" --task generic
     deps:
     - path: data/quail_race_fmt
       md5: 96f33684356371185c1fb8ee7b5c490b.dir
       size: 3475135
       nfiles: 3
     - path: src/etl/choices/reformat_dataset.py
-      md5: e8e3c8d3f5afcfc5c8c9fda62296ac7d
-      size: 4721
+      md5: be5599d6cae9979d1db517d4632b0bbc
+      size: 7045
     outs:
     - path: data/quail_no_empty_answers/dev.json
-      md5: 0527f4f70f20380b3eb7b506c063a7d8
-      size: 554890
-    - path: data/quail_no_empty_answers/dev_index_list.json
-      md5: df9910f3a043308666bffbeb9fcebe5e
-      size: 30297
+      md5: e8c4ed4ea82859767ebbdd4bcec51d3f
+      size: 524048
   format-quail-no-empty-answers-removed@dev:
     cmd: python src/etl/choices/reformat_dataset.py -d data/quail_race_fmt -o data/quail_empty_answers_removed
       -s dev --no_answer_text "not enough information"
@@ -85,20 +81,78 @@ stages:
       size: 2451755
   format-quail-no-empty-answers@train:
     cmd: python src/etl/choices/reformat_dataset.py -d data/quail_race_fmt -o data/quail_no_empty_answers
-      -s train --no_answer_text "not enough information" --keep_matching_text --index_list_path
-      data/quail_no_empty_answers/train_index_list.json
+      -s train --no_answer_text "not enough information" --task generic
     deps:
     - path: data/quail_race_fmt
       md5: 96f33684356371185c1fb8ee7b5c490b.dir
       size: 3475135
       nfiles: 3
     - path: src/etl/choices/reformat_dataset.py
-      md5: e8e3c8d3f5afcfc5c8c9fda62296ac7d
-      size: 4721
+      md5: be5599d6cae9979d1db517d4632b0bbc
+      size: 7045
     outs:
     - path: data/quail_no_empty_answers/train.json
-      md5: 936468445f9be0ea4cc8257a790ab01c
-      size: 2597559
-    - path: data/quail_no_empty_answers/train_index_list.json
-      md5: 7572b57eb9b20aa514df7af7137d5b7b
-      size: 143445
+      md5: d3a6f28fa96f7431cee0ec4aa4193105
+      size: 2451755
+  format-race@dev:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/RACE/ -o data/race -s
+      dev --no_answer_text "not enough information" --task race --mask --proportion
+      0.0
+    deps:
+    - path: data/RACE/dev
+      md5: 1be4be7086bef61408432e677c5056d0.dir
+      size: 3308878
+      nfiles: 1389
+    - path: src/etl/choices/reformat_dataset.py
+      md5: be5599d6cae9979d1db517d4632b0bbc
+      size: 7045
+    outs:
+    - path: data/race/dev.json
+      md5: 665890d29ec0a837608e6db3849c133b
+      size: 3318633
+  format-race@train:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/RACE/ -o data/race -s
+      train --no_answer_text "not enough information" --task race --mask --proportion
+      0.0
+    deps:
+    - path: data/RACE/train
+      md5: 22be488af9b6b86c28e4f0423670272f.dir
+      size: 60493414
+      nfiles: 25137
+    - path: src/etl/choices/reformat_dataset.py
+      md5: be5599d6cae9979d1db517d4632b0bbc
+      size: 7045
+    outs:
+    - path: data/race/train.json
+      md5: 25608b19b8af020cd79182659ce62237
+      size: 60716152
+  format-race-with-empty-answers@train:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/race -o data/race_with_empty_answers
+      -s train --no_answer_text "not enough information" --task generic --mask --mask_correct
+      --proportion 0.25
+    deps:
+    - path: data/race/train.json
+      md5: 25608b19b8af020cd79182659ce62237
+      size: 60716152
+    - path: src/etl/choices/reformat_dataset.py
+      md5: be5599d6cae9979d1db517d4632b0bbc
+      size: 7045
+    outs:
+    - path: data/race_with_empty_answers/train.json
+      md5: 6c78a34b5df9ce39ff16d7889492dfd6
+      size: 60501362
+  format-race-with-empty-answers@dev:
+    cmd: python src/etl/choices/reformat_dataset.py -d data/race -o data/race_with_empty_answers
+      -s dev --no_answer_text "not enough information" --task generic --mask --mask_correct
+      --proportion 0.25
+    deps:
+    - path: data/race/dev.json
+      md5: 665890d29ec0a837608e6db3849c133b
+      size: 3318633
+    - path: src/etl/choices/reformat_dataset.py
+      md5: be5599d6cae9979d1db517d4632b0bbc
+      size: 7045
+    outs:
+    - path: data/race_with_empty_answers/dev.json
+      md5: eb56c2d37b6db10b6f870b7d520ab594
+      size: 3306349

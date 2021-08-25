@@ -199,7 +199,7 @@ def mask_dataset(
         )
 
     dataset = Dataset(data_path=data_path, task=task)
-    examples = dataset.get_split(split, with_text_values=True)
+    examples = dataset.get_split(split)
     num_samples = round(len(examples) * proportion)
     mask_indices = random_indices(examples, num_samples)
     masked_dataset = apply_mask(
