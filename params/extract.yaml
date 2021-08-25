@@ -20,15 +20,15 @@ data:
     split: dev
     task: generic
   race-train:
-    data: RACE
+    data: race
     model: bert-train-race
     split: train
-    task: race
+    task: generic
   race-dev:
-    data: RACE
+    data: race
     model: bert-train-race
     split: dev
-    task: race
+    task: generic
   race-with-empty-answers-train:
     data: race_with_empty_answers
     model: bert-train-race-with-empty-answers

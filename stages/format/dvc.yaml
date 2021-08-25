@@ -18,21 +18,32 @@ stages:
     foreach: ${quail.splits}
     do:
       wdir: ../..
-      cmd: python src/etl/choices/reformat_dataset.py -d data/${quail.format.output} -o data/${quail.transform.output}
+      cmd: python src/etl/choices/reformat_dataset.py -d data/${quail.transform.input} -o data/${quail.transform.output}
         -s ${key} --no_answer_text "${quail.no_answer_text}" --task generic
       deps:
-      - data/${quail.format.output}
+      - data/${quail.transform.input}
       - src/etl/choices/reformat_dataset.py
       outs:
       - data/${quail.transform.output}/${item.data}
+  format-race:
+    foreach: ${race.splits}
+    do:
+      wdir: ../..
+      cmd: python src/etl/choices/reformat_dataset.py -d data/RACE/ -o data/${race.format.output}
+        -s ${key} --no_answer_text "${race.no_answer_text}" --task race --mask --proportion 0.0
+      deps:
+      - data/RACE/${item.orig_data}
+      - src/etl/reformat_dataset.py
+      outs:
+      - data/${race.format.output}/${item.data}
   format-race-with-empty-answers:
     foreach: ${race.splits}
     do:
       wdir: ../..
-      cmd: python src/etl/choices/reformat_dataset.py -d data/RACE/ -o data/${race.transform.output}
-        -s ${key} --no_answer_text "${race.no_answer_text}" --task race --mask --mask_correct --proportion 0.25
+      cmd: python src/etl/choices/reformat_dataset.py -d data/${race.transform.input} -o data/${race.transform.output}
+        -s ${key} --no_answer_text "${race.no_answer_text}" --task generic --mask --mask_correct --proportion 0.25
       deps:
-      - data/RACE/${item.data}
+      - data/${race.transform.input}/${item.data}
       - src/etl/choices/reformat_dataset.py
       outs:
       - data/${race.transform.output}/${item.data}

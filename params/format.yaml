@@ -10,13 +10,19 @@ quail:
   format:
     output: quail_race_fmt
   transform:
+    input: quail_race_fmt
     output: quail_no_empty_answers
 race:
   no_answer_text: "not enough information"
   splits:
     train:
+      orig_data: train
       data: train.json
     dev:
+      orig_data: dev
       data: dev.json
+  format:
+    output: race
   transform:
+    input: race
     output: race_with_empty_answers

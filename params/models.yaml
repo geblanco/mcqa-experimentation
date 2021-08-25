@@ -34,8 +34,8 @@ data:
     strategy: "empty_answer"
     # unnecessary, just for completness
     no_answer_text: "not enough information"
-    task: race
-    data: RACE
+    task: generic
+    data: race
     model: bert-base-uncased
     files:
       - train
