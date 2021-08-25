@@ -101,7 +101,7 @@ def save_predictions(output_dir, **kwargs):
 
 def apply_strategy(gold_answer, strategy_dict):
     if strategy_dict["type"] == "random":
-        answer = random.choice(range(len(gold_answer.endings)))
+        answer = random.choice(list(range(len(gold_answer.endings))))
     elif strategy_dict["type"] == "longest":
         answer = np.argmax(map(len, gold_answer.endings))
     elif strategy_dict["type"] == "no_answer":
