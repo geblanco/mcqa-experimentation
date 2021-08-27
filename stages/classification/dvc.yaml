@@ -5,7 +5,8 @@ stages:
     foreach: ${data}
     do:
       wdir: ../..
-      cmd: mlflow run -e main . --no-conda
+      cmd: export MLFLOW_TRACKING_URI="http://0.0.0.0:5000";
+        mlflow run -e main . --no-conda
         -P classifier_dir=/data/gblanco/classification/${key}
         -P dataset=data/${item.data}
         -P params_file=params/classification-params.yaml
