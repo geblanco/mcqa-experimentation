@@ -38,8 +38,8 @@ data:
     data: race
     model: bert-base-uncased
     files:
-      - train
-      - dev
+      - train.json
+      - dev.json
   race-with-empty-answers:
     classification_split: dev
     classification_embeddings: race-with-empty-answers-train
