@@ -1,6 +1,7 @@
 quail:
   train:
     do_train: true
+    do_eval: true
     num_train_epochs: 2
     per_device_train_batch_size: 2
     model_type: bert
@@ -11,6 +12,7 @@ quail:
     gradient_accumulation_steps: 8
     learning_rate: 5e-05
     warmup_steps: 500
+    save_steps: 0
   dev:
     do_train: false
     do_eval: true
@@ -23,9 +25,11 @@ quail:
     gradient_accumulation_steps: 8
     learning_rate: 5e-05
     warmup_steps: 500
+    save_steps: 0
 race:
   train:
     do_train: true
+    do_eval: true
     num_train_epochs: 2
     per_device_train_batch_size: 2
     model_type: bert
@@ -36,6 +40,7 @@ race:
     gradient_accumulation_steps: 8
     learning_rate: 5e-05
     warmup_steps: 500
+    save_steps: 0
   dev:
     do_train: false
     do_eval: true
@@ -48,3 +53,4 @@ race:
     gradient_accumulation_steps: 8
     learning_rate: 5e-05
     warmup_steps: 500
+    save_steps: 0

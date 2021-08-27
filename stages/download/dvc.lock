@@ -27,7 +27,7 @@ stages:
       size: 2452
     outs:
     - path: data/models/bert-base-uncased
-      md5: 40f474d45508322b45273ef7f0945226.dir
+      md5: 05489734d130b7417f8e9f9bce0b12f8.dir
       size: 438245493
       nfiles: 5
   dl-quail:

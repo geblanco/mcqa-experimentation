@@ -35,7 +35,4 @@ stages:
       - data/results/bert-train-${key}/train_predictions.json
       - data/results/bert-train-${key}/eval_nbest_predictions.json
       - data/results/bert-train-${key}/eval_predictions.json
-      metrics:
-      - data/metrics/bert-train-${key}/eval_metrics.json
-      - data/metrics/bert-train-${key}/train_metrics.json
 
