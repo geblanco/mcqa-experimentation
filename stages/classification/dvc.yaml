@@ -5,25 +5,24 @@ stages:
     foreach: ${data}
     do:
       wdir: ../..
-      cmd: mlflow run -e main -P
-        --classifier_dir /data/gblanco/classification/${key}
-        --dataset data/${item.data}
-        --params_file params/classification-params.yaml
-        --classification_embeddings_path /data/gblanco/datasets/embeddings/${item.classification_embeddings}
-        --classification_metrics_dir data/metrics/classification/${key}
-        --corrections_embeddings_path /data/gblanco/datasets/embeddings/${item.corrections_embeddings}
-        --corrections_classifier_path /data/gblanco/classification/${key}
-        --corrections_output_dir data/metrics/model_corrections/${key}
-        --corrections_split ${item.classification_split}
-        --corrections_strategy ${item.strategy}
-        --corrections_no_answer_text ${item.no_answer_text}
-        --evaluation_nbest_predictions data/metrics/model_corrections/${key}/eval_nbest_predictions.json
-        --evaluation_output data/metrics/model_corrections/${key}/scores.json
-        --evaluation_task ${item.task}
+      cmd: mlflow run -e main . --no-conda
+        -P classifier_dir=/data/gblanco/classification/${key}
+        -P dataset=data/${item.data}
+        -P params_file=params/classification-params.yaml
+        -P classification_embeddings_path=/data/gblanco/datasets/embeddings/${item.classification_embeddings}
+        -P classification_metrics_dir=data/metrics/classification/${key}
+        -P corrections_embeddings_path=/data/gblanco/datasets/embeddings/${item.corrections_embeddings}
+        -P corrections_output_dir=data/metrics/model_corrections/${key}
+        -P corrections_split=${item.classification_split}
+        -P corrections_strategy=${item.strategy}
+        -P corrections_no_answer_text=${item.no_answer_text}
+        -P evaluation_nbest_predictions=data/metrics/model_corrections/${key}/eval_nbest_predictions.json
+        -P evaluation_output=data/metrics/model_corrections/${key}/scores.json
+        -P evaluation_task=${item.task}
       deps:
-      - /data/gblanco/datasets/embeddings/${key}
       - data/${item.data}
-      - src/etl/embeddings/classify/classification.py
-      - src/etl/embeddings/transform/correct_predictions.py
+      - src/etl/embeddings/classify/classification_stub.py
+      - src/etl/embeddings/transform/correct_predictions_stub.py
       params:
-      - ../../params/classification-params.yaml:features,classification,hyper-search
+      - params/classification-params.yaml:features,classification,hyper-search
+

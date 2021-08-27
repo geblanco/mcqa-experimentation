@@ -71,7 +71,7 @@ def parse_flags():
         help="The split of the dataset to extract embeddings from"
     )
     parser.add_argument(
-        "-p", "--params_path", required=False, default="params.yaml", type=str,
+        "-p", "--params_file", required=False, default="params.yaml", type=str,
         help="Path to params file to get features from (default to root"
         "params.yaml)"
     )
@@ -219,8 +219,8 @@ def predictions_from_answers(gold_answers, all_logits_dataset):
     return nbest_predictions, predictions
 
 
-def get_path_from_features(classifier_path, data_path, params_path):
-    params = load_params(params_path)
+def get_path_from_features(classifier_path, data_path, params_file):
+    params = load_params(params_file)
     features = get_features_from_object(params, allow_all_feats=True)
     embeddings_path = get_data_path_from_features(
         args=Args(features=features, data_path=data_path)
@@ -247,7 +247,7 @@ def main(
     no_answer_text,
     data_path,
     split,
-    params_path,
+    params_file,
     task,
 ):
     print(f"Load gold answers from {data_path}")
@@ -256,7 +256,7 @@ def main(
     print(f"Load classifier from {classifier_path}")
     classifier = load_classifier(classifier_path)
     embeddings_path, features = get_path_from_features(
-        classifier_path, embeddings_path, params_path
+        classifier_path, embeddings_path, params_file
     )
     print(f"Load embeddings from {embeddings_path}")
     print(f"Features {features}")

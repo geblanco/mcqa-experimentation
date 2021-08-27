@@ -236,6 +236,7 @@ def get_features_from_params(args, allow_all_feats=True):
 
 
 def main(args):
+    print(args)
     data_path = get_data_path_from_features(args)
     print(f"Loading data from {data_path}")
     features = get_features_from_params(args, allow_all_feats=False)

@@ -341,7 +341,12 @@ def main(args):
         )
         save_classifier(classifier, args.output_dir)
         save_args(args, args.output_dir)
-        mlflow.log_artifact(args.output_dir)
+        artifact_path = "_".join(features) + "_classifier"
+        model_name = os.path.basename(args.data_path)
+        mlflow.sklearn.log_model(
+            classifier, artifact_path,
+            registered_model_name=f"{model_name}-model-classifier"
+        )
         mlflow.log_metric(f"train_{args.metric}", score)
 
     if args.eval:

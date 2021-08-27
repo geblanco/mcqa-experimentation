@@ -3,24 +3,24 @@ entry_points:
   # Step for model training
   classification:
     parameters:
-      embeddings_path: path
-      classifier_dir: path
-      metrics_dir: path
-    command: "python src/etl/embeddings/classify/classification.py
+      embeddings_path: string
+      classifier_dir: string
+      metrics_dir: string
+    command: "python src/etl/embeddings/classify/classification_stub.py
       -d {embeddings_path}
       -o {classifier_dir}
       --metrics_dir {metrics_dir}
       --train --eval"
   classifier_corrects_model:
     parameters:
-      classifier_dir: path
-      embeddings_path: path
-      output_dir: path
-      dataset: path
+      classifier_dir: string
+      embeddings_path: string
+      output_dir: string
+      dataset: string
       split: string
       strategy: string
       no_answer_text: string
-    command: "python src/etl/embeddings/transform/correct_predictions.py
+    command: "python src/etl/embeddings/transform/correct_predictions_stub.py
       -c {classifier_dir}
       -e {embeddings_path}
       -o {output_dir}
@@ -30,11 +30,11 @@ entry_points:
       --no_answer_text {no_answer_text}"
   evaluate_corrections:
     parameters:
-      dataset: path
-      nbest_predictions: path
-      output: path
+      dataset: string
+      nbest_predictions: string
+      output: string
       task: {type: string, default: "generic"}
-    command: "mcqa_utils
+    command: "python src/mcqa_utils_stub.py
       -d {dataset}
       -n {nbest_predictions}
      --task {task}
@@ -43,20 +43,20 @@ entry_points:
      --save_mlflow"
   main:
     parameters:
-      classifier_dir: path
-      dataset: path
-      params_file: path
-      classification_embeddings_path: path
-      classification_metrics_dir: path
-      corrections_embeddings_path: path
-      corrections_output_dir: path
+      classifier_dir: string
+      dataset: string
+      params_file: string
+      classification_embeddings_path: string
+      classification_metrics_dir: string
+      corrections_embeddings_path: string
+      corrections_output_dir: string
       corrections_split: string
       corrections_strategy: string
       corrections_no_answer_text: string
-      evaluation_nbest_predictions: path
-      evaluation_output: path
+      evaluation_nbest_predictions: string
+      evaluation_output: string
       evaluation_task: string
-    command: "python search.py
+    command: "python src/processing/search.py
       --classifier_dir {classifier_dir}
       --dataset {dataset}
       --params_file {params_file}
