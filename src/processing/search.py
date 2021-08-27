@@ -25,9 +25,6 @@ def parse_args():
     parser.add_argument("--evaluation_nbest_predictions", type=str)
     parser.add_argument("--evaluation_output", type=str)
     parser.add_argument("--evaluation_task", type=str)
-    parser.add_argument(
-        "--tracking_uri", type=str, default="http://0.0.0.0:5000"
-    )
     args, unk = parser.parse_known_args()
     return args
 
@@ -112,7 +109,6 @@ def grid(params):
 
 
 def main(args):
-    mlflow.set_tracking_uri(args.tracking_uri)
     steps_params = vars(args)
     params = yaml.safe_load(open(args.params_file, "r"))
     param_set_file = tempfile.mktemp()
@@ -126,7 +122,9 @@ def main(args):
             yaml.safe_dump(param_set, open(param_set_file, "w"))
             for step in steps:
                 step_result = step(tracking_client, experiment_id, steps_params)
-                if step_result is None:
+                if step_result is not None:
+                    mlflow.log_metrics(step_result.data.metrics)
+                else:
                     print(f"Failed to reproduce step {step}!")
                     break
     # for combination in feature sweep:

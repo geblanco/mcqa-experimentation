@@ -14,6 +14,7 @@ from pipeline import pipeline_map
 from dataset_class import Dataset
 from dataset_utils import DEFAULT_FEATS
 
+from classifiers import MLPClassifier
 from classifier_setup import (
     setup_gpu_device,
     setup_pipeline,
@@ -250,7 +251,12 @@ def main(args):
         features = sweep_features(features)
 
     save_args(args, args.output_dir)
-    mlflow.log_artifact(args.output_dir)
+    artifact_path = "_".join(features) + "_classifier"
+    model_name = os.path.basename(args.data_path)
+    mlflow.sklearn.log_model(
+        MLPClassifier(lr=0.001), artifact_path,
+        registered_model_name=f"{model_name}-model-classifier"
+    )
     mlflow.log_metric(f"train_{args.metric}", 0.85)
     mlflow.log_metric(f"eval_{args.metric}", 0.95)
 
