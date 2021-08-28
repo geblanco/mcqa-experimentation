@@ -140,3 +140,4 @@ cython_debug/
 runs
 nohup.out
 cached*
+log_history.json
