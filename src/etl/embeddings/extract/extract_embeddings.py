@@ -1,6 +1,5 @@
 import os
 import sys
-import json
 import glob
 import torch
 import pickle
@@ -21,13 +20,16 @@ from mc_transformers.mc_transformers import (
 )
 
 base_path = os.path.dirname(os.path.dirname(__file__))
+root_path = os.path.dirname(os.path.dirname(base_path))
 sys.path.append(os.path.join(base_path, "transform"))
 sys.path.append(os.path.join(base_path, "classify"))
+sys.path.append(os.path.join(root_path, "processing"))
 
 from synthetic_embeddings import generate_synthetic_data  # noqa: E402
 from dataset import save_data  # noqa: E402
 from dataset import get_dataset as load_data  # noqa: E402
 from dataset_class import Dataset  # noqa: E402
+from params_utils import parse as parse_args_file  # noqa: E402
 
 
 if is_tf_available():
@@ -51,10 +53,6 @@ def parse_flags():
     parser.add_argument(
         "-a", "--args_file", required=True, type=str,
         help="Arguments in json used to work with the model"
-    )
-    parser.add_argument(
-        "-x", "--extract", required=False, default=None, type=str,
-        help="Field to extract from the json args file"
     )
     parser.add_argument(
         "-g", "--gpu", required=False, default=0, type=int,
@@ -82,22 +80,27 @@ def parse_flags():
         help="Synthetize data until proportions are met, only "
         "possible when imbalanced class is `incorrect` (e.g.: 0.5)"
     )
+    parser.add_argument(
+        "--extra_args", required=False, default=None, type=str,
+        help="Extra arguments for mc_transformers setup (pass in the same"
+        " format as --args_file)"
+    )
     parser.add_argument("--overwrite", action="store_true")
-    return parser.parse_args()
+    args = parser.parse_args()
+    return args
 
 
-def mc_setup(args_file, extract, split):
-    if extract is not None:
-        args_file = json.load(open(args_file, 'r'))[extract]
-    else:
-        args_file = [args_file]
+def mc_setup(args_file, extra_args, split):
+    prog_args = parse_args_file(args_file)
+    prog_args.update(**parse_args_file(extra_args))
 
+    print("mc_setup", prog_args)
     config_kwargs = {
         "return_dict": True,
         "output_hidden_states": True,
     }
     all_args, processor, config, tokenizer, model = setup(
-        args_file, config_kwargs=config_kwargs
+        prog_args, config_kwargs=config_kwargs
     )
     model_args, data_args, dir_args, training_args, window_args = (
         all_args.values()
@@ -388,91 +391,89 @@ def merge_embedded_data(data_src, data_extra):
     return data_src
 
 
-def main(
-    args_file,
-    extract,
-    split,
-    output_dir,
-    gpu,
-    single_items,
-    pool,
-    scatter_dataset,
-    oversample,
-    overwrite,
-):
+def main(args):
     all_args, model, tokenizer, trainer, eval_dataset = mc_setup(
-        args_file, extract, split
+        args.args_file, args.extra_args, args.split
     )
     _, data_args, _, _, _ = all_args.values()
-    device = torch.device("cuda", index=gpu)
+    device = torch.device("cuda", index=args.gpu)
 
-    if scatter_dataset:
-        dataset_file = os.path.join(output_dir, "embeddings", "index.csv")
+    if args.scatter_dataset:
+        dataset_file = os.path.join(args.output_dir, "embeddings", "index.csv")
     else:
-        dataset_file = os.path.join(output_dir, f"{split}_data.pkl")
+        dataset_file = os.path.join(args.output_dir, f"{args.split}_data.pkl")
 
     embedded = None
-    if overwrite or not Path(dataset_file).exists():
+    if args.overwrite or not Path(dataset_file).exists():
         eval_dataloader = trainer.get_eval_dataloader(eval_dataset)
         embedded = embed_from_dataloader(
             eval_dataloader,
             device,
             model,
-            pool,
-            scatter_dataset,
+            args.pool,
+            args.scatter_dataset,
             synthetic=False,
-            output_dir=output_dir,
+            output_dir=args.output_dir,
         )
-        if not scatter_dataset:
-            save_data(output_dir, split, single_items, **embedded)
+        if not args.scatter_dataset:
+            save_data(
+                args.output_dir, args.split, args.single_items, **embedded
+            )
 
-    if oversample is not None:
-        oversample_rate = str(oversample).replace('.', '')
-        oversampled_name = f"{split}_oversample_{oversample_rate}"
-        if scatter_dataset:
+    if args.oversample is not None:
+        oversample_rate = str(args.oversample).replace('.', '')
+        oversampled_name = f"{args.split}_oversample_{oversample_rate}"
+        if args.scatter_dataset:
             oversampled_file = os.path.join(
                 "oversample_embeddings", "index.csv"
             )
         else:
             oversampled_file = f"{oversampled_name}_data.pkl"
-        oversampled_file = os.path.join(output_dir, oversampled_name)
+        oversampled_file = os.path.join(args.output_dir, oversampled_name)
         # avoid unnecesary loading
-        if not overwrite and Path(oversampled_file).exists():
+        if not args.overwrite and Path(oversampled_file).exists():
             print("Nothing to do")
         elif embedded is None:
             print(f"Loading cached data from {dataset_file}")
-            if scatter_dataset:
-                scatter_dir = os.path.join(output_dir, "embeddings")
+            if args.scatter_dataset:
+                scatter_dir = os.path.join(args.output_dir, "embeddings")
                 embedded = Dataset(data_path=scatter_dir)
             else:
                 embedded = load_data(dataset_file)
 
-        num_samples = get_num_samples(embedded, oversample, scatter_dataset)
+        num_samples = get_num_samples(
+            embedded, args.oversample, args.scatter_dataset
+        )
         oversample_data_dir, oversample_synthetic_dir = oversampling(
-            data_args, num_samples, tokenizer, split, output_dir
+            data_args, num_samples, tokenizer, args.split, args.output_dir
         )
         oversample_dataset = get_dataset(
-            data_args, tokenizer, split, data_dir=oversample_synthetic_dir
+            data_args, tokenizer, args.split, data_dir=oversample_synthetic_dir
         )
         oversample_dataloader = trainer.get_eval_dataloader(oversample_dataset)
         oversample_embedded = embed_from_dataloader(
             oversample_dataloader,
             device,
             model,
-            pool,
-            scatter_dataset,
+            args.pool,
+            args.scatter_dataset,
             synthetic=True,
             output_dir=oversample_data_dir,
         )
-        if scatter_dataset:
+        if args.scatter_dataset:
             oversample_embedded.extend(embedded)
         else:
             embedded = merge_embedded_data(embedded, oversample_embedded)
-            save_data(output_dir, oversampled_name, single_items, **embedded)
+            save_data(
+                args.output_dir,
+                oversampled_name,
+                args.single_items,
+                **embedded
+            )
 
         rmtree(oversample_synthetic_dir)
 
 
 if __name__ == "__main__":
     args = parse_flags()
-    main(**vars(args))
+    main(args)

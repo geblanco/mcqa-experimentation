@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import json
-import yaml
 import argparse
-from pathlib import Path
+
+from params_utils import parse
 
 
 def parse_args():
@@ -33,46 +33,8 @@ def args_to_array_args(prog_args):
     return array_args
 
 
-def parse_args_line(line):
-    extract = []
-    path = line
-    if ":" in line:
-        full = line.split(":")
-        path = full[0]
-        extract = list(
-            filter(bool, map(lambda ex: ex.strip(), full[1].split(",")))
-        )
-
-    return path, extract
-
-
-def load_args_file(args_line):
-    if args_line.endswith(".yaml") or args_line.endswith(".yml"):
-        parser = yaml.safe_load
-    else:
-        parser = json.load
-
-    return parser(Path(args_line).read_text())
-
-
-def extract_keys(prog_args, extract):
-    ret = {}
-    for ex in extract:
-        if "." not in ex:
-            ret.update(**prog_args.get(ex))
-        else:
-            ret_key = prog_args.copy()
-            for key in ex.split("."):
-                ret_key = ret_key[key]
-            ret.update(**ret_key)
-    return ret
-
-
 def main(args):
-    args_path, extract = parse_args_line(args.file)
-    prog_args = load_args_file(args_path)
-    if extract is not None:
-        prog_args = extract_keys(prog_args, extract)
+    prog_args = parse(args.file)
     if args.exclude is not None:
         for exclude in args.exclude:
             del prog_args[exclude]

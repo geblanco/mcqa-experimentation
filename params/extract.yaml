@@ -47,3 +47,21 @@ data:
     params-key: race
     split: dev
     task: generic
+
+model-args:
+  bert-train-quail:
+    data_dir: data/quail_race_fmt
+    model_name_or_path: data/models/bert-train-quail
+    output_dir: data/models/bert-eval-quail
+  bert-train-quail-no-empty-answers:
+    data_dir: data/quail_no_empty_answers
+    model_name_or_path: data/models/bert-train-quail-no-empty-answers
+    output_dir: data/models/bert-eval-quail-no-empty-answers
+  bert-train-race:
+    data_dir: data/race
+    model_name_or_path: data/models/bert-train-race
+    output_dir: data/models/bert-eval-race
+  bert-train-race-with-empty-answers:
+    data_dir: data/race_with_empty_answers
+    model_name_or_path: data/models/bert-train-race-with-empty-answers
+    output_dir: data/models/bert-eval-race-with-empty-answers
