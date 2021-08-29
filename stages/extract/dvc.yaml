@@ -8,14 +8,14 @@ stages:
     do:
       wdir: ../..
       cmd: python src/etl/embeddings/extract/extract_embeddings.py -s ${item.split}
-        --args_file params/model-params.yaml:${key}.${item.split}
+        --args_file params/model-params.yaml:${item.params-key}.${item.split}
         --extract ${item.split}
         --scatter_dataset
         -o /data/gblanco/datasets/embeddings/${key}
       deps:
       - data/models/${item.model}
       - data/${item.data}
-      - params/model-params.yaml:${key}.${item.split}
+      - params/model-params.yaml
       - src/etl/embeddings/extract/extract_embeddings.py
       outs:
       - /data/gblanco/datasets/embeddings/${key}/embeddings

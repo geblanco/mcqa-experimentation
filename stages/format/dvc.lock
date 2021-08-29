@@ -39,9 +39,9 @@ stages:
       -s dev --no_answer_text "not enough information" --task generic
     deps:
     - path: data/quail_race_fmt
-      md5: ee780e638ce7786f3b124c622896969a.dir
-      size: 141671982
-      nfiles: 5
+      md5: e6b9d11c655a5817cb657eac43381f0b.dir
+      size: 170911581
+      nfiles: 7
     - path: src/etl/choices/reformat_dataset.py
       md5: be5599d6cae9979d1db517d4632b0bbc
       size: 7045
@@ -84,9 +84,9 @@ stages:
       -s train --no_answer_text "not enough information" --task generic
     deps:
     - path: data/quail_race_fmt
-      md5: ee780e638ce7786f3b124c622896969a.dir
-      size: 141671982
-      nfiles: 5
+      md5: e6b9d11c655a5817cb657eac43381f0b.dir
+      size: 170911581
+      nfiles: 7
     - path: src/etl/choices/reformat_dataset.py
       md5: be5599d6cae9979d1db517d4632b0bbc
       size: 7045

@@ -2,40 +2,48 @@ data:
   quail-train:
     data: quail_race_fmt
     model: bert-train-quail
+    params-key: quail
     split: train
     task: generic
   quail-dev:
     data: quail_race_fmt
     model: bert-train-quail
+    params-key: quail
     split: dev
     task:  generic
   quail-no-empty-answers-train:
     data: quail_no_empty_answers
     model: bert-train-quail-no-empty-answers
+    params-key: quail
     split: train
     task: generic
   quail-no-empty-answers-dev:
     data: quail_no_empty_answers
     model: bert-train-quail-no-empty-answers
+    params-key: quail
     split: dev
     task: generic
   race-train:
     data: race
     model: bert-train-race
+    params-key: race
     split: train
     task: generic
   race-dev:
     data: race
     model: bert-train-race
+    params-key: race
     split: dev
     task: generic
   race-with-empty-answers-train:
     data: race_with_empty_answers
     model: bert-train-race-with-empty-answers
+    params-key: race
     split: train
     task: generic
   race-with-empty-answers-dev:
     data: race_with_empty_answers
     model: bert-train-race-with-empty-answers
+    params-key: race
     split: dev
     task: generic
