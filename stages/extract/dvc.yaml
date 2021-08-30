@@ -1,5 +1,6 @@
 vars:
   - ../../params/extract.yaml
+  - ../../params/data-disk.yaml
 
 stages:
   # keys: quail-train quail-dev quail-no-empty-answers-train quail-no-empty-answers-dev race-train race-dev
@@ -11,47 +12,47 @@ stages:
         --args_file params/model-params.yaml:${item.params-key}.${item.split}
         --extra_args params/extract.yaml:model-args.${item.model}
         --scatter_dataset
-        -o /data/gblanco/datasets/embeddings/${key}
+        -o ${data-disk}/datasets/embeddings/${key}
       deps:
       - data/models/${item.model}
       - data/${item.data}
       - params/model-params.yaml
       - src/etl/embeddings/extract/extract_embeddings.py
       outs:
-      - /data/gblanco/datasets/embeddings/${key}/embeddings
+      - ${data-disk}/datasets/embeddings/${key}/embeddings
   extract-lengths:
     foreach: ${data}
     do:
       wdir: ../..
       cmd: python src/etl/embeddings/extract/extract_lengths.py -d data/${item.data} -s ${item.split}
-        -t ${item.task} -o /data/gblanco/datasets/embeddings/${key}/text_lengths
+        -t ${item.task} -o ${data-disk}/datasets/embeddings/${key}/text_lengths
       deps:
       - data/${item.data}
       - src/etl/embeddings/extract/extract_lengths.py
       outs:
-      - /data/gblanco/datasets/embeddings/${key}/text_lengths_data.pkl
+      - ${data-disk}/datasets/embeddings/${key}/text_lengths_data.pkl
   normalize:
     foreach: ${data}
     do:
       wdir: ../..
-      cmd: python src/etl/embeddings/transform/normalize_embeddings.py -d /data/gblanco/datasets/embeddings/${key}/embeddings
-        -n 50 --scatter_dataset -o /data/gblanco/datasets/embeddings/${key}/normalized_embeddings
+      cmd: python src/etl/embeddings/transform/normalize_embeddings.py -d ${data-disk}/datasets/embeddings/${key}/embeddings
+        -n 50 --scatter_dataset -o ${data-disk}/datasets/embeddings/${key}/normalized_embeddings
       deps:
-      - /data/gblanco/datasets/embeddings/${key}/embeddings
+      - ${data-disk}/datasets/embeddings/${key}/embeddings
       - src/etl/embeddings/transform/normalize_embeddings.py
       outs:
-      - /data/gblanco/datasets/embeddings/${key}/normalized_embeddings
+      - ${data-disk}/datasets/embeddings/${key}/normalized_embeddings
   merge_norm_with_lengths:
     foreach: ${data}
     do:
       wdir: ../..
-      cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e /data/gblanco/datasets/embeddings/${key}/normalized_embeddings
-        -d /data/gblanco/datasets/embeddings/${key}/text_lengths_data.pkl
-        -o /data/gblanco/datasets/embeddings/${key}/normalized_embeddings_with_lengths
+      cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e ${data-disk}/datasets/embeddings/${key}/normalized_embeddings
+        -d ${data-disk}/datasets/embeddings/${key}/text_lengths_data.pkl
+        -o ${data-disk}/datasets/embeddings/${key}/normalized_embeddings_with_lengths
         --scatter_dataset
       deps:
-      - /data/gblanco/datasets/embeddings/${key}/normalized_embeddings
-      - /data/gblanco/datasets/embeddings/${key}/text_lengths_data.pkl
+      - ${data-disk}/datasets/embeddings/${key}/normalized_embeddings
+      - ${data-disk}/datasets/embeddings/${key}/text_lengths_data.pkl
       - src/etl/embeddings/transform/merge_embeddings_and_lengths.py
       outs:
-      - /data/gblanco/datasets/embeddings/${key}/normalized_embeddings_with_lengths
+      - ${data-disk}/datasets/embeddings/${key}/normalized_embeddings_with_lengths
