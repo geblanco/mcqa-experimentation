@@ -1,0 +1,236 @@
+schema: '2.0'
+stages:
+  extract-embeddings@race-dev:
+    cmd: python src/etl/embeddings/extract/extract_embeddings.py -s dev --args_file
+      params/model-params.yaml:race.dev --extra_args params/extract.yaml:model-args.bert-train-race
+      --scatter_dataset -o /data/gblanco/datasets/embeddings/race-dev
+    deps:
+    - path: data/models/bert-train-race
+      md5: d7b0b4704dda22a8257d286d735d76bc.dir
+      size: 438252226
+      nfiles: 8
+    - path: data/race
+      md5: bd136b87763e6e1b2e42ba42d5e21723.dir
+      size: 1286692229
+      nfiles: 7
+    - path: params/model-params.yaml
+      md5: 06914e3e32c7f3c3fb91255e71aca952
+      size: 1205
+    - path: src/etl/embeddings/extract/extract_embeddings.py
+      md5: 61f579c8b9bc52a80cead2431ec3a034
+      size: 16136
+    outs:
+    - path: /data/gblanco/datasets/embeddings/race-dev/embeddings
+      md5: 880ee65c04333c295df1adf9bd342fe1.dir
+      size: 29066461453
+      nfiles: 4888
+  normalize@race-dev:
+    cmd: python src/etl/embeddings/transform/normalize_embeddings.py -d /data/gblanco/datasets/embeddings/race-dev/embeddings
+      -n 50 --scatter_dataset -o /data/gblanco/datasets/embeddings/race-dev/normalized_embeddings
+    deps:
+    - path: /data/gblanco/datasets/embeddings/race-dev/embeddings
+      md5: 880ee65c04333c295df1adf9bd342fe1.dir
+      size: 29066461453
+      nfiles: 4888
+    - path: src/etl/embeddings/transform/normalize_embeddings.py
+      md5: 4fbd590c4418242cac7712c84a3608bf
+      size: 3091
+    outs:
+    - path: /data/gblanco/datasets/embeddings/race-dev/normalized_embeddings
+      md5: 8394a6f137697a752141984a41568b5f.dir
+      size: 3644597
+      nfiles: 4888
+  extract-lengths@race-dev:
+    cmd: python src/etl/embeddings/extract/extract_lengths.py -d data/race -s dev
+      -t generic -o /data/gblanco/datasets/embeddings/race-dev/text_lengths
+    deps:
+    - path: data/race
+      md5: bd136b87763e6e1b2e42ba42d5e21723.dir
+      size: 1286692229
+      nfiles: 7
+    - path: src/etl/embeddings/extract/extract_lengths.py
+      md5: 0233e7c9395d55903d824235618e7a30
+      size: 2566
+    outs:
+    - path: /data/gblanco/datasets/embeddings/race-dev/text_lengths_data.pkl
+      md5: ce9783ac069f2d496a86787153577fb8
+      size: 352141
+  merge_norm_with_lengths@race-dev:
+    cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e /data/gblanco/datasets/embeddings/race-dev/normalized_embeddings
+      -d /data/gblanco/datasets/embeddings/race-dev/text_lengths_data.pkl -o /data/gblanco/datasets/embeddings/race-dev/normalized_embeddings_with_lengths
+      --scatter_dataset
+    deps:
+    - path: /data/gblanco/datasets/embeddings/race-dev/normalized_embeddings
+      md5: 8394a6f137697a752141984a41568b5f.dir
+      size: 3644597
+      nfiles: 4888
+    - path: /data/gblanco/datasets/embeddings/race-dev/text_lengths_data.pkl
+      md5: ce9783ac069f2d496a86787153577fb8
+      size: 352141
+    - path: src/etl/embeddings/transform/merge_embeddings_and_lengths.py
+      md5: bdf8fd8efcebfb7ca4c90b250c44e7b7
+      size: 1925
+    outs:
+    - path: /data/gblanco/datasets/embeddings/race-dev/normalized_embeddings_with_lengths
+      md5: 6cdec1bdb825bb0381533c3c79917a79.dir
+      size: 4973861
+      nfiles: 4888
+  extract-embeddings@quail-no-empty-answers-dev:
+    cmd: python src/etl/embeddings/extract/extract_embeddings.py -s dev --args_file
+      params/model-params.yaml:quail.dev --extra_args params/extract.yaml:model-args.bert-train-quail-no-empty-answers
+      --scatter_dataset -o /data/gblanco/datasets/embeddings/quail-no-empty-answers-dev
+    deps:
+    - path: data/models/bert-train-quail-no-empty-answers
+      md5: f4675a2c59a6877f924c59a331d5c31d.dir
+      size: 438250758
+      nfiles: 8
+    - path: data/quail_no_empty_answers
+      md5: b5e477cb1bc92d1fb6bf1a5fc192a915.dir
+      size: 114670683
+      nfiles: 7
+    - path: params/model-params.yaml
+      md5: 06914e3e32c7f3c3fb91255e71aca952
+      size: 1205
+    - path: src/etl/embeddings/extract/extract_embeddings.py
+      md5: 61f579c8b9bc52a80cead2431ec3a034
+      size: 16136
+    outs:
+    - path: /data/gblanco/datasets/embeddings/quail-no-empty-answers-dev/embeddings
+      md5: 8145f9e371079e2eb71581f2add73195.dir
+      size: 8582725144
+      nfiles: 1925
+  normalize@quail-no-empty-answers-dev:
+    cmd: python src/etl/embeddings/transform/normalize_embeddings.py -d /data/gblanco/datasets/embeddings/quail-no-empty-answers-dev/embeddings
+      -n 50 --scatter_dataset -o /data/gblanco/datasets/embeddings/quail-no-empty-answers-dev/normalized_embeddings
+    deps:
+    - path: /data/gblanco/datasets/embeddings/quail-no-empty-answers-dev/embeddings
+      md5: 8145f9e371079e2eb71581f2add73195.dir
+      size: 8582725144
+      nfiles: 1925
+    - path: src/etl/embeddings/transform/normalize_embeddings.py
+      md5: 4fbd590c4418242cac7712c84a3608bf
+      size: 3091
+    outs:
+    - path: /data/gblanco/datasets/embeddings/quail-no-empty-answers-dev/normalized_embeddings
+      md5: bcb2cbcf6fda45c125b5f547f0a01f5c.dir
+      size: 1461135
+      nfiles: 1925
+  extract-lengths@quail-train:
+    cmd: python src/etl/embeddings/extract/extract_lengths.py -d data/quail_race_fmt
+      -s train -t generic -o /data/gblanco/datasets/embeddings/quail-train/text_lengths
+    deps:
+    - path: data/quail_race_fmt
+      md5: e6b9d11c655a5817cb657eac43381f0b.dir
+      size: 170911581
+      nfiles: 7
+    - path: src/etl/embeddings/extract/extract_lengths.py
+      md5: 0233e7c9395d55903d824235618e7a30
+      size: 2566
+    outs:
+    - path: /data/gblanco/datasets/embeddings/quail-train/text_lengths_data.pkl
+      md5: 2ea3d58713f6941cf47a75f3cc486f0c
+      size: 737998
+  extract-embeddings@quail-dev:
+    cmd: python src/etl/embeddings/extract/extract_embeddings.py -s dev --args_file
+      params/model-params.yaml:quail.dev --extra_args params/extract.yaml:model-args.bert-train-quail
+      --scatter_dataset -o /data/gblanco/datasets/embeddings/quail-dev
+    deps:
+    - path: data/models/bert-train-quail
+      md5: a518611bf030e1f718ddcd32bb98a05b.dir
+      size: 438250694
+      nfiles: 8
+    - path: data/quail_race_fmt
+      md5: e6b9d11c655a5817cb657eac43381f0b.dir
+      size: 170911581
+      nfiles: 7
+    - path: params/model-params.yaml
+      md5: 06914e3e32c7f3c3fb91255e71aca952
+      size: 1205
+    - path: src/etl/embeddings/extract/extract_embeddings.py
+      md5: 61f579c8b9bc52a80cead2431ec3a034
+      size: 16136
+    outs:
+    - path: /data/gblanco/datasets/embeddings/quail-dev/embeddings
+      md5: 723d036a6ffae56414981a446b909862.dir
+      size: 12870846564
+      nfiles: 2165
+  normalize@quail-dev:
+    cmd: python src/etl/embeddings/transform/normalize_embeddings.py -d /data/gblanco/datasets/embeddings/quail-dev/embeddings
+      -n 50 --scatter_dataset -o /data/gblanco/datasets/embeddings/quail-dev/normalized_embeddings
+    deps:
+    - path: /data/gblanco/datasets/embeddings/quail-dev/embeddings
+      md5: 723d036a6ffae56414981a446b909862.dir
+      size: 12870846564
+      nfiles: 2165
+    - path: src/etl/embeddings/transform/normalize_embeddings.py
+      md5: 4fbd590c4418242cac7712c84a3608bf
+      size: 3091
+    outs:
+    - path: /data/gblanco/datasets/embeddings/quail-dev/normalized_embeddings
+      md5: abb10f2be326131d68d6b83a56919e88.dir
+      size: 1615403
+      nfiles: 2165
+  extract-embeddings@quail-train:
+    cmd: python src/etl/embeddings/extract/extract_embeddings.py -s train --args_file
+      params/model-params.yaml:quail.train --extra_args params/extract.yaml:model-args.bert-train-quail
+      --scatter_dataset -o /data/gblanco/datasets/embeddings/quail-train
+    deps:
+    - path: data/models/bert-train-quail
+      md5: a518611bf030e1f718ddcd32bb98a05b.dir
+      size: 438250694
+      nfiles: 8
+    - path: data/quail_race_fmt
+      md5: e6b9d11c655a5817cb657eac43381f0b.dir
+      size: 170911581
+      nfiles: 7
+    - path: params/model-params.yaml
+      md5: 06914e3e32c7f3c3fb91255e71aca952
+      size: 1205
+    - path: src/etl/embeddings/extract/extract_embeddings.py
+      md5: 61f579c8b9bc52a80cead2431ec3a034
+      size: 16136
+    outs:
+    - path: /data/gblanco/datasets/embeddings/quail-train/embeddings
+      md5: 2801f7fbcebdb869f825a2be8e2b175c.dir
+      size: 60940275932
+      nfiles: 10247
+  normalize@quail-train:
+    cmd: python src/etl/embeddings/transform/normalize_embeddings.py -d /data/gblanco/datasets/embeddings/quail-train/embeddings
+      -n 50 --scatter_dataset -o /data/gblanco/datasets/embeddings/quail-train/normalized_embeddings
+    deps:
+    - path: /data/gblanco/datasets/embeddings/quail-train/embeddings
+      md5: 2801f7fbcebdb869f825a2be8e2b175c.dir
+      size: 60940275932
+      nfiles: 10247
+    - path: src/etl/embeddings/transform/normalize_embeddings.py
+      md5: 4fbd590c4418242cac7712c84a3608bf
+      size: 3091
+    outs:
+    - path: /data/gblanco/datasets/embeddings/quail-train/normalized_embeddings
+      md5: a79445029dc5a7a3dcaf6ac29735e56a.dir
+      size: 7673395
+      nfiles: 10247
+  extract-embeddings@race-train:
+    cmd: python src/etl/embeddings/extract/extract_embeddings.py -s train --args_file
+      params/model-params.yaml:race.train --extra_args params/extract.yaml:model-args.bert-train-race
+      --scatter_dataset -o /data/gblanco/datasets/embeddings/race-train
+    deps:
+    - path: data/models/bert-train-race
+      md5: d7b0b4704dda22a8257d286d735d76bc.dir
+      size: 438252226
+      nfiles: 8
+    - path: data/race
+      md5: bd136b87763e6e1b2e42ba42d5e21723.dir
+      size: 1286692229
+      nfiles: 7
+    - path: params/model-params.yaml
+      md5: 06914e3e32c7f3c3fb91255e71aca952
+      size: 1205
+    - path: src/etl/embeddings/extract/extract_embeddings.py
+      md5: 61f579c8b9bc52a80cead2431ec3a034
+      size: 16136
+    outs:
+    - path: /data/gblanco/datasets/embeddings/race-train/embeddings
+      md5: 6c251b7b9162f7d36b101a20f2bbcbfc.dir
+      size: 522601903986
+      nfiles: 87867
