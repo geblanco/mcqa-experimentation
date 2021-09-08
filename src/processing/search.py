@@ -15,7 +15,8 @@ def parse_args():
     parser.add_argument("--classifier_dir", type=str)
     parser.add_argument("--dataset", type=str)
     parser.add_argument("--params_file", type=str)
-    parser.add_argument("--classification_embeddings_path", type=str)
+    parser.add_argument("--classification_train_embeddings_path", type=str)
+    parser.add_argument("--classification_eval_embeddings_path", type=str)
     parser.add_argument("--classification_metrics_dir", type=str)
     parser.add_argument("--corrections_embeddings_path", type=str)
     parser.add_argument("--corrections_output_dir", type=str)
@@ -38,7 +39,8 @@ def run_classification_step(tracking_client, experiment_id, params):
             entry_point="classification",
             run_id=child_run.info.run_id,
             parameters={
-                "embeddings_path": params["classification_embeddings_path"],
+                "train_embeddings_path": params["classification_train_embeddings_path"],
+                "eval_embeddings_path": params["classification_eval_embeddings_path"],
                 "classifier_dir": params["classifier_dir"],
                 "metrics_dir": params["classification_metrics_dir"],
                 "params_file": params["params_file"]

@@ -126,7 +126,7 @@ def random_indices(examples, num_samples):
         raise ValueError(
             "Requested more examples than available"
         )
-    return random.choices(range(total_examples), k=num_samples + 1)
+    return random.sample(range(total_examples), k=num_samples + 1)
 
 
 def apply_mask(examples, mask_indices, mask_correct, mask_text):

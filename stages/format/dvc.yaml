@@ -14,8 +14,25 @@ stages:
       - src/etl/preprocess_quail_to_race.py
       outs:
       - data/${quail.format.output}/${item.data}
+  split-quail:
+    wdir: ../..
+    cmd: src/etl/split_dataset.py --data_path data/${quail.format.output}
+      --overwrite
+      --outputs ${quail.splits.train.data} ${quail.splits.dev.data}
+      --move ${quail.splits.dev.data} ${quail.transform-splits.test.data}
+      --no_answer_text ${quail.no_answer_text}
+      --proportions 0.75
+      --split train
+      --task generic
+    deps:
+      - data/${quail.format.output}/${quail.splits.train.data}
+      - data/${quail.format.output}/${quail.splits.dev.data}
+    outs:
+      - data/${quail.format.output}/${quail.splits.train.data}
+      - data/${quail.format.output}/${quail.splits.dev.data}
+      - data/${quail.format.output}/${quail.transform-splits.test.data}
   format-quail-no-empty-answers:
-    foreach: ${quail.splits}
+    foreach: ${quail.transform-splits}
     do:
       wdir: ../..
       cmd: python src/etl/choices/reformat_dataset.py -d data/${quail.transform.input} -o data/${quail.transform.output}
@@ -36,8 +53,24 @@ stages:
       - src/etl/choices/reformat_dataset.py
       outs:
       - data/${race.format.output}/${item.data}
+  split-race:
+    wdir: ../..
+    cmd: src/etl/split_dataset.py --data_path data/${race.transform.input}
+      --overwrite
+      --outputs ${race.splits.train.data} ${race.splits.dev.data}
+      --move ${race.splits.dev.data} ${race.transform-splits.test.data}
+      --proportions 0.75
+      --split train
+      --task generic
+    deps:
+      - data/${race.format.output}/${race.splits.train.data}
+      - data/${race.format.output}/${race.splits.dev.data}
+    outs:
+      - data/${race.format.output}/${race.splits.train.data}
+      - data/${race.format.output}/${race.splits.dev.data}
+      - data/${race.format.output}/${race.transform-splits.test.data}
   format-race-with-empty-answers:
-    foreach: ${race.splits}
+    foreach: ${race.transform-splits}
     do:
       wdir: ../..
       cmd: python src/etl/choices/reformat_dataset.py -d data/${race.transform.input} -o data/${race.transform.output}

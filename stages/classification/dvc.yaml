@@ -11,7 +11,8 @@ stages:
         -P classifier_dir=/data/gblanco/classification/${key}
         -P dataset=data/${item.data}
         -P params_file=params/classification-params.yaml
-        -P classification_embeddings_path=${data-disk}/datasets/embeddings/${item.classification_embeddings}
+        -P classification_train_embeddings_path=${data-disk}/datasets/embeddings/${item.classification_train_embeddings}
+        -P classification_eval_embeddings_path=${data-disk}/datasets/embeddings/${item.classification_eval_embeddings}
         -P classification_metrics_dir=data/metrics/classification/${key}
         -P corrections_embeddings_path=${data-disk}/datasets/embeddings/${item.corrections_embeddings}
         -P corrections_output_dir=data/metrics/model_corrections/${key}

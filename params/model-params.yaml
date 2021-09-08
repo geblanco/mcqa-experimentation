@@ -2,6 +2,7 @@ quail:
   train:
     do_train: true
     do_eval: true
+    do_test: true
     num_train_epochs: 2
     per_device_train_batch_size: 2
     model_type: bert
@@ -16,6 +17,21 @@ quail:
   dev:
     do_train: false
     do_eval: true
+    do_test: true
+    per_device_eval_batch_size: 8
+    model_type: bert
+    task_name: generic
+    fp16: true
+    fp16_opt_level: O1
+    max_seq_length: 484
+    gradient_accumulation_steps: 8
+    learning_rate: 5e-05
+    warmup_steps: 500
+    save_steps: 0
+  test:
+    do_train: false
+    do_eval: true
+    do_test: true
     per_device_eval_batch_size: 8
     model_type: bert
     task_name: generic
@@ -30,6 +46,7 @@ race:
   train:
     do_train: true
     do_eval: true
+    do_test: true
     num_train_epochs: 2
     per_device_train_batch_size: 2
     model_type: bert
@@ -44,6 +61,7 @@ race:
   dev:
     do_train: false
     do_eval: true
+    do_test: true
     per_device_eval_batch_size: 8
     model_type: bert
     task_name: generic
@@ -54,3 +72,18 @@ race:
     learning_rate: 5e-05
     warmup_steps: 500
     save_steps: 0
+  test:
+    do_train: false
+    do_eval: true
+    do_test: true
+    per_device_eval_batch_size: 8
+    model_type: bert
+    task_name: generic
+    fp16: true
+    fp16_opt_level: O1
+    max_seq_length: 484
+    gradient_accumulation_steps: 8
+    learning_rate: 5e-05
+    warmup_steps: 500
+    save_steps: 0
+

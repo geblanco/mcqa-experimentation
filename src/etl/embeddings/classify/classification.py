@@ -94,6 +94,10 @@ def parse_flags():
         help="File containing the dataset"
     )
     parser.add_argument(
+        "--eval_data_path", required=False, default=None, type=str,
+        help="File containing the evaluation dataset (ignore test_size)"
+    )
+    parser.add_argument(
         "-t", "--train", required=False, action="store_true"
     )
     parser.add_argument(
@@ -308,6 +312,11 @@ def get_features_from_params(args, allow_all_feats=True):
 def main(args):
     data_path = get_data_path_from_features(args)
     print(f"Loading data from {data_path}")
+
+    if args.eval_data_path is not None:
+        eval_data_path = get_data_path_from_features(data_path_arg=args.eval_data_path)
+        print(f"Loading evaluation data from {eval_data_path}")
+
     features = get_features_from_params(args, allow_all_feats=False)
     if not len(features):
         raise RuntimeError("No features found to work")
@@ -320,14 +329,22 @@ def main(args):
 
     if args.no_scatter_dataset:
         dataset, features = get_normalized_dataset(data_path, features)
-        train_dict, test_dict = get_splits(
-            dataset, test_size=args.test_size, random_state=args.seed
-        )
+        if eval_data_path is None:
+            train_dict, test_dict = get_splits(
+                dataset, test_size=args.test_size, random_state=args.seed
+            )
+        else:
+            train_dict = dataset
+            test_dict, features = get_normalized_dataset(eval_data_path, features)
     else:
         dataset = Dataset(data_path=data_path, features=features)
-        train_dict, test_dict = dataset.get_splits(
-            test_size=args.test_size, random_state=args.seed
-        )
+        if eval_data_path is None:
+            train_dict, test_dict = dataset.get_splits(
+                test_size=args.test_size, random_state=args.seed
+            )
+        else:
+            train_dict = dataset
+            test_dict = Dataset(data_path=eval_data_path, features=features)
 
     score_fn = arg_to_metric_map[args.metric]
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)

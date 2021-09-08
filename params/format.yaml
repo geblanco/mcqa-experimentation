@@ -7,6 +7,13 @@ quail:
     dev:
       data: dev.json
       answers: dev_answers.json
+  transform-splits:
+    train:
+      data: train.json
+    dev:
+      data: dev.json
+    test:
+      data: test.json
   format:
     output: quail_race_fmt
   transform:
@@ -21,6 +28,13 @@ race:
     dev:
       orig_data: dev
       data: dev.json
+  transform-splits:
+    train:
+      data: train.json
+    dev:
+      data: dev.json
+    test:
+      data: test.json
   format:
     output: race
   transform:

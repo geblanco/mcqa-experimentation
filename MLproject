@@ -3,11 +3,13 @@ entry_points:
   # Step for model training
   classification:
     parameters:
-      embeddings_path: string
+      train_embeddings_path: string
+      eval_embeddings_path: string
       classifier_dir: string
       metrics_dir: string
     command: "python src/etl/embeddings/classify/classification_stub.py
-      -d {embeddings_path}
+      --data_path {train_embeddings_path}
+      --eval_data_path {eval_embeddings_path}
       -o {classifier_dir}
       --metrics_dir {metrics_dir}
       --train --eval"
@@ -46,7 +48,8 @@ entry_points:
       classifier_dir: string
       dataset: string
       params_file: string
-      classification_embeddings_path: string
+      classification_train_embeddings_path: string
+      classification_eval_embeddings_path: string
       classification_metrics_dir: string
       corrections_embeddings_path: string
       corrections_output_dir: string
@@ -60,7 +63,8 @@ entry_points:
       --classifier_dir {classifier_dir}
       --dataset {dataset}
       --params_file {params_file}
-      --classification_embeddings_path {classification_embeddings_path}
+      --classification_train_embeddings_path {classification_train_embeddings_path}
+      --classification_eval_embeddings_path {classification_eval_embeddings_path}
       --classification_metrics_dir {classification_metrics_dir}
       --corrections_embeddings_path {corrections_embeddings_path}
       --corrections_output_dir {corrections_output_dir}
