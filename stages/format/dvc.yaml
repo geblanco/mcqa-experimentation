@@ -18,6 +18,7 @@ stages:
     wdir: ../..
     cmd: src/etl/split_dataset.py --data_path data/${quail.format.output}
       --overwrite
+      --output_dir ${quail.split-data.output}
       --outputs ${quail.splits.train.data} ${quail.splits.dev.data}
       --move ${quail.splits.dev.data} ${quail.transform-splits.test.data}
       --no_answer_text ${quail.no_answer_text}
@@ -28,17 +29,17 @@ stages:
       - data/${quail.format.output}/${quail.splits.train.data}
       - data/${quail.format.output}/${quail.splits.dev.data}
     outs:
-      - data/${quail.format.output}/${quail.splits.train.data}
-      - data/${quail.format.output}/${quail.splits.dev.data}
-      - data/${quail.format.output}/${quail.transform-splits.test.data}
+      - data/${quail.split-data.output}/${quail.splits.train.data}
+      - data/${quail.split-data.output}/${quail.splits.dev.data}
+      - data/${quail.split-data.output}/${quail.transform-splits.test.data}
   format-quail-no-empty-answers:
     foreach: ${quail.transform-splits}
     do:
       wdir: ../..
-      cmd: python src/etl/choices/reformat_dataset.py -d data/${quail.transform.input} -o data/${quail.transform.output}
+      cmd: python src/etl/choices/reformat_dataset.py -d data/${quail.split-data.output} -o data/${quail.transform.output}
         -s ${key} --no_answer_text "${quail.no_answer_text}" --task generic
       deps:
-      - data/${quail.transform.input}
+      - data/${quail.split-data.output}
       - src/etl/choices/reformat_dataset.py
       outs:
       - data/${quail.transform.output}/${item.data}
@@ -55,8 +56,9 @@ stages:
       - data/${race.format.output}/${item.data}
   split-race:
     wdir: ../..
-    cmd: src/etl/split_dataset.py --data_path data/${race.transform.input}
+    cmd: src/etl/split_dataset.py --data_path data/${race.format.output}
       --overwrite
+      --output_dir ${race.split-data.output}
       --outputs ${race.splits.train.data} ${race.splits.dev.data}
       --move ${race.splits.dev.data} ${race.transform-splits.test.data}
       --proportions 0.75
@@ -66,17 +68,17 @@ stages:
       - data/${race.format.output}/${race.splits.train.data}
       - data/${race.format.output}/${race.splits.dev.data}
     outs:
-      - data/${race.format.output}/${race.splits.train.data}
-      - data/${race.format.output}/${race.splits.dev.data}
-      - data/${race.format.output}/${race.transform-splits.test.data}
+      - data/${race.split-data.output}/${race.splits.train.data}
+      - data/${race.split-data.output}/${race.splits.dev.data}
+      - data/${race.split-data.output}/${race.transform-splits.test.data}
   format-race-with-empty-answers:
     foreach: ${race.transform-splits}
     do:
       wdir: ../..
-      cmd: python src/etl/choices/reformat_dataset.py -d data/${race.transform.input} -o data/${race.transform.output}
+      cmd: python src/etl/choices/reformat_dataset.py -d data/${race.split-data.output} -o data/${race.transform.output}
         -s ${key} --no_answer_text "${race.no_answer_text}" --task generic --mask --mask_correct --proportion 0.25
       deps:
-      - data/${race.transform.input}/${item.data}
+      - data/${race.split-data.output}/${item.data}
       - src/etl/choices/reformat_dataset.py
       outs:
       - data/${race.transform.output}/${item.data}

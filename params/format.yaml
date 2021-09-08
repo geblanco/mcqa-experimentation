@@ -15,9 +15,10 @@ quail:
     test:
       data: test.json
   format:
+    output: quail_race_fmt_original
+  split-data:
     output: quail_race_fmt
   transform:
-    input: quail_race_fmt
     output: quail_no_empty_answers
 race:
   no_answer_text: "not enough information"
@@ -36,7 +37,8 @@ race:
     test:
       data: test.json
   format:
+    output: race_formatted
+  split-data:
     output: race
   transform:
-    input: race
     output: race_with_empty_answers
