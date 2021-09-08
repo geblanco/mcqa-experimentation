@@ -76,7 +76,7 @@ stages:
     do:
       wdir: ../..
       cmd: python src/etl/choices/reformat_dataset.py -d data/${race.split-data.output} -o data/${race.transform.output}
-        -s ${key} --no_answer_text "${race.no_answer_text}" --task generic --mask --mask_correct --proportion 0.25
+        -s ${key} --no_answer_text "${race.no_answer_text}" --task generic --mask --mask_correct --proportion 0.11
       deps:
       - data/${race.split-data.output}/${item.data}
       - src/etl/choices/reformat_dataset.py
