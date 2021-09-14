@@ -4,7 +4,7 @@ data:
     classification_eval_embeddings: quail-test
     corrections_embeddings: quail-test
     corrections_split: test
-    corrections_split_name: eval
+    corrections_split_name: test
     params-key: quail
     strategy: "no_answer"
     no_answer_text: "not enough information"
@@ -19,7 +19,7 @@ data:
     classification_eval_embeddings: quail-no-empty-answers-test
     corrections_embeddings: quail-no-empty-answers-test
     corrections_split: test
-    corrections_split_name: eval
+    corrections_split_name: test
     params-key: quail
     strategy: "empty_answer"
     # unnecessary, just for completness
@@ -35,7 +35,7 @@ data:
     classification_eval_embeddings: race-test
     corrections_embeddings: race-test
     corrections_split: test
-    corrections_split_name: eval
+    corrections_split_name: test
     params-key: race
     strategy: "empty_answer"
     # unnecessary, just for completness
@@ -51,7 +51,7 @@ data:
     classification_eval_embeddings: race-with-empty-answers-test
     corrections_embeddings: race-with-empty-answers-test
     corrections_split: test
-    corrections_split_name: eval
+    corrections_split_name: test
     params-key: race
     strategy: "no_answer"
     no_answer_text: "not enough information"
