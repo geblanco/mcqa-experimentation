@@ -39,9 +39,9 @@ stages:
       -s dev --no_answer_text "not enough information" --task generic
     deps:
     - path: data/quail_race_fmt
-      md5: 470302c78cd1c337f2e47dae9b0a5bc5.dir
-      size: 4583722
-      nfiles: 4
+      md5: b10a55ed7679e1157226da34aa0e1602.dir
+      size: 172019959
+      nfiles: 10
     - path: src/etl/choices/reformat_dataset.py
       md5: 7829c688d5a7050c7bbe76e4b13206b6
       size: 7044
@@ -84,9 +84,9 @@ stages:
       -s train --no_answer_text "not enough information" --task generic
     deps:
     - path: data/quail_race_fmt
-      md5: 470302c78cd1c337f2e47dae9b0a5bc5.dir
-      size: 4583722
-      nfiles: 4
+      md5: b10a55ed7679e1157226da34aa0e1602.dir
+      size: 172019959
+      nfiles: 10
     - path: src/etl/choices/reformat_dataset.py
       md5: 7829c688d5a7050c7bbe76e4b13206b6
       size: 7044
@@ -108,8 +108,8 @@ stages:
       size: 7044
     outs:
     - path: data/race_formatted/dev.json
-      md5: f9a373cac9ca854ca54d06700056bb2c
-      size: 3318601
+      md5: 6591fdc9f97af35644362837f6f58176
+      size: 3318636
   format-race@train:
     cmd: python src/etl/choices/reformat_dataset.py -d data/RACE/ -o data/race_formatted
       -s train --no_answer_text "not enough information" --task race --mask --proportion
@@ -124,59 +124,59 @@ stages:
       size: 7044
     outs:
     - path: data/race_formatted/train.json
-      md5: 49074dd8eea75da0a499809c246c1f1a
-      size: 60716158
+      md5: 7e56668cd17b8db851e04d4d8bbe8ce8
+      size: 60716205
   format-race-with-empty-answers@train:
     cmd: python src/etl/choices/reformat_dataset.py -d data/race -o data/race_with_empty_answers
       -s train --no_answer_text "not enough information" --task generic --mask --mask_correct
       --proportion 0.11
     deps:
     - path: data/race/train.json
-      md5: 727e75ae0457a8a1ce347b264fccf94c
-      size: 55284091
+      md5: 8397cf0a5681f3ce9de660ec391f196b
+      size: 55225702
     - path: src/etl/choices/reformat_dataset.py
       md5: 7829c688d5a7050c7bbe76e4b13206b6
       size: 7044
     outs:
     - path: data/race_with_empty_answers/train.json
-      md5: 8200958a77e714af768fcf2f2bb7107f
-      size: 55204339
+      md5: be1fe072e903c4dba5418ad9f426135d
+      size: 55141446
   format-race-with-empty-answers@dev:
     cmd: python src/etl/choices/reformat_dataset.py -d data/race -o data/race_with_empty_answers
       -s dev --no_answer_text "not enough information" --task generic --mask --mask_correct
       --proportion 0.11
     deps:
     - path: data/race/dev.json
-      md5: 8e7d7c0792fef4e919c44a1857f63a3e
-      size: 30608807
+      md5: 8e09eb06e00fe8e14b125a20ee1cd5ee
+      size: 30512703
     - path: src/etl/choices/reformat_dataset.py
       md5: 7829c688d5a7050c7bbe76e4b13206b6
       size: 7044
     outs:
     - path: data/race_with_empty_answers/dev.json
-      md5: c742ba41984e6a7611a22d258b6cad9a
-      size: 30583922
+      md5: be0e27bbf4071bd03bc2d3bc5915c5eb
+      size: 30485781
   split-race:
     cmd: src/etl/split_dataset.py --data_path data/race_formatted --overwrite --output_dir
       data/race --outputs train.json dev.json --move dev.json test.json --proportion
       0.75 --split train --task generic
     deps:
     - path: data/race_formatted/dev.json
-      md5: f9a373cac9ca854ca54d06700056bb2c
-      size: 3318601
+      md5: 6591fdc9f97af35644362837f6f58176
+      size: 3318636
     - path: data/race_formatted/train.json
-      md5: 49074dd8eea75da0a499809c246c1f1a
-      size: 60716158
+      md5: 7e56668cd17b8db851e04d4d8bbe8ce8
+      size: 60716205
     outs:
     - path: data/race/dev.json
-      md5: 8e7d7c0792fef4e919c44a1857f63a3e
-      size: 30608807
+      md5: 8e09eb06e00fe8e14b125a20ee1cd5ee
+      size: 30512703
     - path: data/race/test.json
-      md5: f9a373cac9ca854ca54d06700056bb2c
-      size: 3318601
+      md5: 6591fdc9f97af35644362837f6f58176
+      size: 3318636
     - path: data/race/train.json
-      md5: 727e75ae0457a8a1ce347b264fccf94c
-      size: 55284091
+      md5: 8397cf0a5681f3ce9de660ec391f196b
+      size: 55225702
   split-quail:
     cmd: src/etl/split_dataset.py --data_path data/quail_race_fmt_original --overwrite
       --output_dir data/quail_race_fmt --outputs train.json dev.json --move dev.json
@@ -204,9 +204,9 @@ stages:
       -s test --no_answer_text "not enough information" --task generic
     deps:
     - path: data/quail_race_fmt
-      md5: 470302c78cd1c337f2e47dae9b0a5bc5.dir
-      size: 4583722
-      nfiles: 4
+      md5: b10a55ed7679e1157226da34aa0e1602.dir
+      size: 172019959
+      nfiles: 10
     - path: src/etl/choices/reformat_dataset.py
       md5: 7829c688d5a7050c7bbe76e4b13206b6
       size: 7044
@@ -220,12 +220,12 @@ stages:
       --proportion 0.11
     deps:
     - path: data/race/test.json
-      md5: f9a373cac9ca854ca54d06700056bb2c
-      size: 3318601
+      md5: 6591fdc9f97af35644362837f6f58176
+      size: 3318636
     - path: src/etl/choices/reformat_dataset.py
       md5: 7829c688d5a7050c7bbe76e4b13206b6
       size: 7044
     outs:
     - path: data/race_with_empty_answers/test.json
-      md5: 2162be62b7b1ef992dc1a61df8d4faa9
-      size: 3312745
+      md5: f8b6d2ed1a7347708e7c63c567c31405
+      size: 3311417
