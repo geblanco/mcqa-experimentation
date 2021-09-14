@@ -16,13 +16,12 @@ stages:
       - data/${quail.format.output}/${item.data}
   split-quail:
     wdir: ../..
-    cmd: src/etl/split_dataset.py --data_path data/${quail.format.output}
-      --overwrite
-      --output_dir ${quail.split-data.output}
+    cmd: src/etl/split_dataset.py --data_path data/${quail.format.output} --overwrite
+      --output_dir data/${quail.split-data.output}
       --outputs ${quail.splits.train.data} ${quail.splits.dev.data}
       --move ${quail.splits.dev.data} ${quail.transform-splits.test.data}
-      --no_answer_text ${quail.no_answer_text}
-      --proportions 0.75
+      --no_answer_text "${quail.no_answer_text}"
+      --proportion 0.75
       --split train
       --task generic
     deps:
@@ -58,10 +57,10 @@ stages:
     wdir: ../..
     cmd: src/etl/split_dataset.py --data_path data/${race.format.output}
       --overwrite
-      --output_dir ${race.split-data.output}
+      --output_dir data/${race.split-data.output}
       --outputs ${race.splits.train.data} ${race.splits.dev.data}
       --move ${race.splits.dev.data} ${race.transform-splits.test.data}
-      --proportions 0.75
+      --proportion 0.75
       --split train
       --task generic
     deps:

@@ -1,5 +1,16 @@
 schema: '2.0'
 stages:
+  dl-models:
+    cmd: python src/etl/dl_models.py -m bert-base-uncased --overwrite
+    deps:
+    - path: src/etl/dl_models.py
+      md5: c2ca665ea793afe968fff649f0e04717
+      size: 2452
+    outs:
+    - path: data/models/bert-base-uncased
+      md5: 35dba6921d591a96b63fd57423ca241d.dir
+      size: 438245493
+      nfiles: 5
   dl-race:
     cmd: src/etl/dl_race.sh
     deps:
@@ -19,17 +30,6 @@ stages:
       md5: 22be488af9b6b86c28e4f0423670272f.dir
       size: 60493414
       nfiles: 25137
-  dl-models:
-    cmd: python src/etl/dl_models.py -m bert-base-uncased --overwrite
-    deps:
-    - path: src/etl/dl_models.py
-      md5: c2ca665ea793afe968fff649f0e04717
-      size: 2452
-    outs:
-    - path: data/models/bert-base-uncased
-      md5: 05489734d130b7417f8e9f9bce0b12f8.dir
-      size: 438245493
-      nfiles: 5
   dl-quail:
     cmd: src/etl/dl_quail.sh
     deps:

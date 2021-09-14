@@ -2,7 +2,7 @@ quail:
   train:
     do_train: true
     do_eval: true
-    do_test: true
+    do_predict: true
     num_train_epochs: 2
     per_device_train_batch_size: 2
     model_type: bert
@@ -17,7 +17,7 @@ quail:
   dev:
     do_train: false
     do_eval: true
-    do_test: true
+    do_predict: true
     per_device_eval_batch_size: 8
     model_type: bert
     task_name: generic
@@ -31,7 +31,7 @@ quail:
   test:
     do_train: false
     do_eval: true
-    do_test: true
+    do_predict: true
     per_device_eval_batch_size: 8
     model_type: bert
     task_name: generic
@@ -46,7 +46,7 @@ race:
   train:
     do_train: true
     do_eval: true
-    do_test: true
+    do_predict: true
     num_train_epochs: 2
     per_device_train_batch_size: 2
     model_type: bert
@@ -61,7 +61,7 @@ race:
   dev:
     do_train: false
     do_eval: true
-    do_test: true
+    do_predict: true
     per_device_eval_batch_size: 8
     model_type: bert
     task_name: generic
@@ -75,7 +75,7 @@ race:
   test:
     do_train: false
     do_eval: true
-    do_test: true
+    do_predict: true
     per_device_eval_batch_size: 8
     model_type: bert
     task_name: generic

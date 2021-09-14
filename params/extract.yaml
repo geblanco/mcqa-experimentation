@@ -41,36 +41,36 @@ data:
   #   params-key: race
   #   split: train
   #   task: generic
-  race-dev:
-    data: race
-    model: bert-train-race
-    params-key: race
-    split: dev
-    task: generic
-  race-test:
-    data: race
-    model: bert-train-race
-    params-key: race
-    split: test
-    task: generic
+  # race-dev:
+  #   data: race
+  #   model: bert-train-race
+  #   params-key: race
+  #   split: dev
+  #   task: generic
+  # race-test:
+  #   data: race
+  #   model: bert-train-race
+  #   params-key: race
+  #   split: test
+  #   task: generic
   # race-with-empty-answers-train:
   #   data: race_with_empty_answers
   #   model: bert-train-race-with-empty-answers
   #   params-key: race
   #   split: train
   #   task: generic
-  race-with-empty-answers-dev:
-    data: race_with_empty_answers
-    model: bert-train-race-with-empty-answers
-    params-key: race
-    split: dev
-    task: generic
-  race-with-empty-answers-test:
-    data: race_with_empty_answers
-    model: bert-train-race-with-empty-answers
-    params-key: race
-    split: test
-    task: generic
+  # race-with-empty-answers-dev:
+  #   data: race_with_empty_answers
+  #   model: bert-train-race-with-empty-answers
+  #   params-key: race
+  #   split: dev
+  #   task: generic
+  # race-with-empty-answers-test:
+  #   data: race_with_empty_answers
+  #   model: bert-train-race-with-empty-answers
+  #   params-key: race
+  #   split: test
+  #   task: generic
 
 model-args:
   bert-train-quail:

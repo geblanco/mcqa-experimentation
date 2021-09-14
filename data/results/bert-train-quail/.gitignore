@@ -2,3 +2,5 @@
 /train_predictions.json
 /eval_nbest_predictions.json
 /eval_predictions.json
+/test_nbest_predictions.json
+/test_predictions.json

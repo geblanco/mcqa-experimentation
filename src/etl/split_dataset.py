@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import json
 import random
@@ -139,7 +141,7 @@ def setup_dirs(args):
 
     moves, move_from, move_to = None, None, None
     if args.move is not None:
-        move_from = output_dir.joinpath(args.move[0])
+        move_from = Path(args.data_path).joinpath(args.move[0])
         move_to = output_dir.joinpath(args.move[1])
         moves = [move_from, move_to]
 
@@ -193,7 +195,8 @@ def main(args):
     dev_split = randomize_split(dev_split)
 
     if moves is not None:
-        shutil.move(moves[0], moves[1])
+        moves[1].parent.mkdir(exist_ok=True, parents=True)
+        shutil.copy(moves[0], moves[1])
 
     save_data(dataset.to_json(train_split), outputs[0])
     save_data(dataset.to_json(dev_split), outputs[1])

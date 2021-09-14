@@ -73,15 +73,15 @@ stages:
       "data/results/bert-train-quail-no-empty-answers" --cache_dir "/tmp"
     deps:
     - path: data/models/bert-base-uncased
-      md5: 05489734d130b7417f8e9f9bce0b12f8.dir
+      md5: 35dba6921d591a96b63fd57423ca241d.dir
       size: 438245493
       nfiles: 5
     - path: data/quail_no_empty_answers/dev.json
-      md5: e8c4ed4ea82859767ebbdd4bcec51d3f
-      size: 524048
+      md5: 03fdd9ecc0a41dfd75062e71c53fae43
+      size: 1438151
     - path: data/quail_no_empty_answers/train.json
-      md5: d3a6f28fa96f7431cee0ec4aa4193105
-      size: 2451755
+      md5: 20ac60fcc4f0d60230ca4d47e88259df
+      size: 2115891
     - path: src/processing/run.sh
       md5: c13caa779e2050a5d0d9c1781a5fb217
       size: 1619
@@ -90,6 +90,7 @@ stages:
         quail.train:
           do_train: true
           do_eval: true
+          do_predict: true
           num_train_epochs: 2
           per_device_train_batch_size: 2
           model_type: bert
@@ -106,7 +107,7 @@ stages:
       md5: fda1d82a923cf7ffd8b9da484296692f
       size: 698
     - path: data/models/bert-train-quail-no-empty-answers/pytorch_model.bin
-      md5: 2328e7f5cb51283434d486cf5f640457
+      md5: 24a3bf65d749816b267b3a430f2d32da
       size: 438016173
     - path: data/models/bert-train-quail-no-empty-answers/special_tokens_map.json
       md5: 8b3fb1023167bb4ab9d70708eb05f6ec
@@ -115,23 +116,29 @@ stages:
       md5: acaa1589c694bf6f6c146b3bac976f67
       size: 161
     - path: data/models/bert-train-quail-no-empty-answers/training_args.bin
-      md5: 66d01802d5092161d3f2655f81e3c4c0
+      md5: a11c0bd2a28ed10657056fe7d50b1150
       size: 1839
     - path: data/models/bert-train-quail-no-empty-answers/vocab.txt
       md5: 64800d5d8528ce344256daf115d4965e
       size: 231508
     - path: data/results/bert-train-quail-no-empty-answers/eval_nbest_predictions.json
-      md5: d11584cde486e484653e4ce989fcc0df
-      size: 208158
+      md5: 65db9540dc5cb5e334281ad12f73a1a1
+      size: 250563
     - path: data/results/bert-train-quail-no-empty-answers/eval_predictions.json
-      md5: f5720c74b3514e7cc723967750900613
+      md5: 897eb540affa26b1d419597c9f00d395
+      size: 36385
+    - path: data/results/bert-train-quail-no-empty-answers/test_nbest_predictions.json
+      md5: 18eda193f1006416ba846936d1e51369
+      size: 208412
+    - path: data/results/bert-train-quail-no-empty-answers/test_predictions.json
+      md5: 7b1e4e1a88437826dac45d0d6d02ed82
       size: 30785
     - path: data/results/bert-train-quail-no-empty-answers/train_nbest_predictions.json
-      md5: f7e5ebde8424d2ecada6bcc7f19f055a
-      size: 985858
+      md5: b26bb82641fd0f5e502087b06572267b
+      size: 741786
     - path: data/results/bert-train-quail-no-empty-answers/train_predictions.json
-      md5: af5127ef8d70df244f3ec9c8776fdc66
-      size: 145521
+      md5: 55376c2b39785fbdf9da449486a07b78
+      size: 109137
   bert-train@quail:
     cmd: src/processing/run.sh params/model-params.yaml:quail.train --data_dir "data/quail_race_fmt"
       --model_name_or_path "data/models/bert-base-uncased" --output_dir "data/models/bert-train-quail"
@@ -139,15 +146,15 @@ stages:
       --cache_dir "/tmp"
     deps:
     - path: data/models/bert-base-uncased
-      md5: 05489734d130b7417f8e9f9bce0b12f8.dir
+      md5: 35dba6921d591a96b63fd57423ca241d.dir
       size: 438245493
       nfiles: 5
     - path: data/quail_race_fmt/dev.json
-      md5: b2573225520d6ae103b7b1f899ebd433
-      size: 611156
+      md5: b0ad6f729159b745450951cf45da936e
+      size: 1546432
     - path: data/quail_race_fmt/train.json
-      md5: 6c67d6a9e3c054cf471ef467fbf23e26
-      size: 2863957
+      md5: fd57d3acc9daaad34f0823b093d9cae5
+      size: 2426101
     - path: src/processing/run.sh
       md5: c13caa779e2050a5d0d9c1781a5fb217
       size: 1619
@@ -156,6 +163,7 @@ stages:
         quail.train:
           do_train: true
           do_eval: true
+          do_predict: true
           num_train_epochs: 2
           per_device_train_batch_size: 2
           model_type: bert
@@ -172,7 +180,7 @@ stages:
       md5: fda1d82a923cf7ffd8b9da484296692f
       size: 698
     - path: data/models/bert-train-quail/pytorch_model.bin
-      md5: cbb3b4d42d7aa3713c5e6bb012c46379
+      md5: a5a8599f86b660bb57cd8f128a66c06b
       size: 438016173
     - path: data/models/bert-train-quail/special_tokens_map.json
       md5: 8b3fb1023167bb4ab9d70708eb05f6ec
@@ -181,23 +189,29 @@ stages:
       md5: acaa1589c694bf6f6c146b3bac976f67
       size: 161
     - path: data/models/bert-train-quail/training_args.bin
-      md5: d4aed76cd285843c6a00ff1e7d85cdde
+      md5: 65076fae2f05c88b0fd48734135e24a0
       size: 1775
     - path: data/models/bert-train-quail/vocab.txt
       md5: 64800d5d8528ce344256daf115d4965e
       size: 231508
     - path: data/results/bert-train-quail/eval_nbest_predictions.json
-      md5: c16acb5a156340c11c7a35a3f376380c
-      size: 280942
+      md5: e070f804500b90b428ccf65ded43b0a9
+      size: 336637
     - path: data/results/bert-train-quail/eval_predictions.json
-      md5: ed3ae29ae5d1c71e2ab0f45b4682a133
+      md5: aa36f942917720966cff112c55bc4c37
+      size: 40993
+    - path: data/results/bert-train-quail/test_nbest_predictions.json
+      md5: 4bebec172b641197708d332680db2a39
+      size: 280762
+    - path: data/results/bert-train-quail/test_predictions.json
+      md5: e18a9fff699f9d5f47c6099f9613c927
       size: 34625
     - path: data/results/bert-train-quail/train_nbest_predictions.json
-      md5: 2d1336ead4b78c3315424beed0687ef0
-      size: 1332939
+      md5: 417f8b9633b899bea9eb953f286ab7be
+      size: 999366
     - path: data/results/bert-train-quail/train_predictions.json
-      md5: 3be0468aa4bbc376c204fd7a425a4af9
-      size: 163937
+      md5: 8cc38f0f4179dbb1e660d5d1e214b3c0
+      size: 122945
   bert-train@race:
     cmd: src/processing/run.sh params/model-params.yaml:race.train --data_dir "data/race"
       --model_name_or_path "data/models/bert-base-uncased" --output_dir "data/models/bert-train-race"
