@@ -18,17 +18,20 @@ stages:
         -P corrections_output_dir=data/metrics/model_corrections/${key}
         -P corrections_split=${item.corrections_split}
         -P corrections_strategy=${item.strategy}
-        -P corrections_no_answer_text=${item.no_answer_text}
+        -P corrections_no_answer_text="${item.no_answer_text}"
         -P evaluation_nbest_predictions=data/metrics/model_corrections/${key}/${item.corrections_split_name}_nbest_predictions.json
         -P evaluation_output=data/metrics/model_corrections/${key}/scores.json
         -P evaluation_task=${item.task}
         -P evaluation_model_nbest_predictions=data/results/bert-train-${key}/${item.corrections_split_name}_nbest_predictions.json
         -P evaluation_model_output=data/metrics/bert-train-${key}/scores.json
       deps:
-      - data/${item.data}
-      - src/etl/embeddings/classify/classification_stub.py
-      - src/etl/embeddings/transform/correct_predictions_stub.py
+        - data/${item.data}
+        - src/etl/embeddings/classify/classification.py
+        - src/etl/embeddings/transform/correct_predictions.py
       params:
-      - params/classification-params.yaml:features,classification,hyper-search
+        - params/classification-params.yaml:
+            - features
+            - classification
+            - hyper-search
       # should add outputs and no cache?
 

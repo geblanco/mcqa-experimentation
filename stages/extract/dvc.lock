@@ -239,9 +239,9 @@ stages:
       -s test -t generic -o /backup/gblanco/datasets/embeddings/quail-no-empty-answers-test/text_lengths
     deps:
     - path: data/quail_no_empty_answers
-      md5: e58cf63b2203a52350a126b24127c6be.dir
-      size: 4078167
-      nfiles: 4
+      md5: 9f36f7d899ca114755e794853d17b62c.dir
+      size: 115772772
+      nfiles: 10
     - path: src/etl/embeddings/extract/extract_lengths.py
       md5: 0233e7c9395d55903d824235618e7a30
       size: 2566
@@ -342,3 +342,85 @@ stages:
       md5: 53e9afa10b559b07ab0615e1d0aebc47.dir
       size: 12870853056
       nfiles: 2165
+  merge_with_lengths@quail-no-empty-answers-test:
+    cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e /backup/gblanco/datasets/embeddings/quail-no-empty-answers-test/embeddings
+      -d /backup/gblanco/datasets/embeddings/quail-no-empty-answers-test/text_lengths_data.pkl
+      -o /backup/gblanco/datasets/embeddings/quail-no-empty-answers-test/embeddings_with_lengths
+      --scatter_dataset
+    deps:
+    - path: /backup/gblanco/datasets/embeddings/quail-no-empty-answers-test/embeddings
+      md5: 6c1bffa313a18c5b3bb81a9a2b3c91a6.dir
+      size: 8582730916
+      nfiles: 1925
+    - path: /backup/gblanco/datasets/embeddings/quail-no-empty-answers-test/text_lengths_data.pkl
+      md5: 4975e531838d49f898cf942cd55d39e7
+      size: 108003
+    - path: src/etl/embeddings/transform/merge_embeddings_and_lengths.py
+      md5: bdf8fd8efcebfb7ca4c90b250c44e7b7
+      size: 1925
+    outs:
+    - path: /backup/gblanco/datasets/embeddings/quail-no-empty-answers-test/embeddings_with_lengths
+      md5: c5a18c0739c6e7d602e2e13c4d0c8734.dir
+      size: 8583214939
+      nfiles: 1925
+  merge_with_lengths@quail-no-empty-answers-dev:
+    cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e /backup/gblanco/datasets/embeddings/quail-no-empty-answers-dev/embeddings
+      -d /backup/gblanco/datasets/embeddings/quail-no-empty-answers-dev/text_lengths_data.pkl
+      -o /backup/gblanco/datasets/embeddings/quail-no-empty-answers-dev/embeddings_with_lengths
+      --scatter_dataset
+    deps:
+    - path: /backup/gblanco/datasets/embeddings/quail-no-empty-answers-dev/embeddings
+      md5: 5adb215dc27405c542e7d6956e0ac583.dir
+      size: 10144036642
+      nfiles: 2275
+    - path: /backup/gblanco/datasets/embeddings/quail-no-empty-answers-dev/text_lengths_data.pkl
+      md5: bc71fff895406ddc89a3f1b39e524789
+      size: 127612
+    - path: src/etl/embeddings/transform/merge_embeddings_and_lengths.py
+      md5: bdf8fd8efcebfb7ca4c90b250c44e7b7
+      size: 1925
+    outs:
+    - path: /backup/gblanco/datasets/embeddings/quail-no-empty-answers-dev/embeddings_with_lengths
+      md5: af5c14c25b45274674a6bda439920e9b.dir
+      size: 10144608515
+      nfiles: 2275
+  merge_with_lengths@quail-test:
+    cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e /backup/gblanco/datasets/embeddings/quail-test/embeddings
+      -d /backup/gblanco/datasets/embeddings/quail-test/text_lengths_data.pkl -o /backup/gblanco/datasets/embeddings/quail-test/embeddings_with_lengths
+      --scatter_dataset
+    deps:
+    - path: /backup/gblanco/datasets/embeddings/quail-test/embeddings
+      md5: 53e9afa10b559b07ab0615e1d0aebc47.dir
+      size: 12870853056
+      nfiles: 2165
+    - path: /backup/gblanco/datasets/embeddings/quail-test/text_lengths_data.pkl
+      md5: 9892d2ba0b735171a09e36ba00537f6c
+      size: 156085
+    - path: src/etl/embeddings/transform/merge_embeddings_and_lengths.py
+      md5: bdf8fd8efcebfb7ca4c90b250c44e7b7
+      size: 1925
+    outs:
+    - path: /backup/gblanco/datasets/embeddings/quail-test/embeddings_with_lengths
+      md5: e1cae7605a70601c2938fd76b077af44.dir
+      size: 12871431943
+      nfiles: 2165
+  merge_with_lengths@quail-dev:
+    cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e /backup/gblanco/datasets/embeddings/quail-dev/embeddings
+      -d /backup/gblanco/datasets/embeddings/quail-dev/text_lengths_data.pkl -o /backup/gblanco/datasets/embeddings/quail-dev/embeddings_with_lengths
+      --scatter_dataset
+    deps:
+    - path: /backup/gblanco/datasets/embeddings/quail-dev/embeddings
+      md5: 1d51cdb060ed5749f577c3bf23734dde.dir
+      size: 15238041064
+      nfiles: 2563
+    - path: /backup/gblanco/datasets/embeddings/quail-dev/text_lengths_data.pkl
+      md5: 5f237dbae17e88c64f225f8efca5f583
+      size: 184741
+    - path: src/etl/embeddings/transform/merge_embeddings_and_lengths.py
+      md5: bdf8fd8efcebfb7ca4c90b250c44e7b7
+      size: 1925
+    outs:
+    - path: /backup/gblanco/datasets/embeddings/quail-dev/embeddings_with_lengths
+      md5: cfeba9c5adbd0eb086f742b32db1f1bb.dir
+      size: 15238726217
+      nfiles: 2563

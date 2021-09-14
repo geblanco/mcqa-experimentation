@@ -31,6 +31,20 @@ stages:
       - src/etl/embeddings/extract/extract_lengths.py
       outs:
       - ${data-disk}/datasets/embeddings/${key}/text_lengths_data.pkl
+  merge_with_lengths:
+    foreach: ${data}
+    do:
+      wdir: ../..
+      cmd: python src/etl/embeddings/transform/merge_embeddings_and_lengths.py -e ${data-disk}/datasets/embeddings/${key}/embeddings
+        -d ${data-disk}/datasets/embeddings/${key}/text_lengths_data.pkl
+        -o ${data-disk}/datasets/embeddings/${key}/embeddings_with_lengths
+        --scatter_dataset
+      deps:
+      - ${data-disk}/datasets/embeddings/${key}/embeddings
+      - ${data-disk}/datasets/embeddings/${key}/text_lengths_data.pkl
+      - src/etl/embeddings/transform/merge_embeddings_and_lengths.py
+      outs:
+      - ${data-disk}/datasets/embeddings/${key}/embeddings_with_lengths
   # normalize:
   #   foreach: ${data}
   #   do:
