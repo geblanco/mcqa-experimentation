@@ -24,8 +24,11 @@ def parse_args():
     parser.add_argument("--corrections_strategy", type=str)
     parser.add_argument("--corrections_no_answer_text", type=str)
     parser.add_argument("--evaluation_nbest_predictions", type=str)
+    parser.add_argument("--evaluation_split", type=str)
     parser.add_argument("--evaluation_output", type=str)
     parser.add_argument("--evaluation_task", type=str)
+    parser.add_argument("--evaluation_model_nbest_predictions", type=str)
+    parser.add_argument("--evaluation_model_output", type=str)
     args, unk = parser.parse_known_args()
     return args
 
@@ -93,6 +96,7 @@ def run_class_evaluation_step(tracking_client, experiment_id, params):
             parameters={
                 "dataset": params["dataset"],
                 "nbest_predictions": params["evaluation_nbest_predictions"],
+                "split": params["evaluation_split"],
                 "output": params["evaluation_output"],
                 "task": params["evaluation_task"],
             },
@@ -115,6 +119,7 @@ def run_model_evaluation_step(tracking_client, experiment_id, params):
             parameters={
                 "dataset": params["dataset"],
                 "nbest_predictions": params["evaluation_model_nbest_predictions"],  # noqa: E501
+                "split": params["evaluation_split"],
                 "output": params["evaluation_model_output"],
                 "task": params["evaluation_task"],
             },
@@ -156,6 +161,7 @@ def main(args):
                 else:
                     print(f"Failed to reproduce step {step}!")
                     break
+
     # for combination in feature sweep:
     # - mlflow classification step
     # - mlflow correction step

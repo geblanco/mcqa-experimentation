@@ -36,27 +36,33 @@ entry_points:
       dataset: string
       nbest_predictions: string
       output: string
+      split: string
       task: {type: string, default: "generic"}
     command: "mcqa_utils
       -d {dataset}
       -n {nbest_predictions}
-     --task {task}
-     -o {task}
-     -m C_at_1 avg
-     --save_mlflow"
+      -s {split}
+      --task {task}
+      -o {output}
+      -m C_at_1 avg
+      --overwrite
+      --save_mlflow"
   evaluate_model:
     parameters:
       dataset: string
       nbest_predictions: string
       output: string
+      split: string
       task: {type: string, default: "generic"}
     command: "mcqa_utils
       -d {dataset}
       -n {nbest_predictions}
-     --task {task}
-     -o {task}
-     -m C_at_1 avg
-     --save_mlflow"
+      -s {split}
+      --task {task}
+      -o {output}
+      -m C_at_1 avg
+      --overwrite
+      --save_mlflow"
   main:
     parameters:
       classifier_dir: string
@@ -71,8 +77,11 @@ entry_points:
       corrections_strategy: string
       corrections_no_answer_text: string
       evaluation_nbest_predictions: string
+      evaluation_split: string
       evaluation_output: string
       evaluation_task: string
+      evaluation_model_nbest_predictions: string
+      evaluation_model_output: string
     command: "python src/processing/search.py
       --classifier_dir {classifier_dir}
       --dataset {dataset}
@@ -86,5 +95,8 @@ entry_points:
       --corrections_strategy {corrections_strategy}
       --corrections_no_answer_text {corrections_no_answer_text}
       --evaluation_nbest_predictions {evaluation_nbest_predictions}
+      --evaluation_split {evaluation_split}
       --evaluation_output {evaluation_output}
-      --evaluation_task {evaluation_task}"
+      --evaluation_task {evaluation_task}
+      --evaluation_model_nbest_predictions {evaluation_model_nbest_predictions}
+      --evaluation_model_output {evaluation_model_output}"

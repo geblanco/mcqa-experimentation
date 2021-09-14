@@ -157,7 +157,7 @@ def parse_flags():
         help="Learning rate for optimization algorithm"
     )
     parser.add_argument(
-        "--epochs", required=False, type=int, default=50,
+        "--epochs", required=False, type=int, default=10,
         help="Training epochs for MLP classifier"
     )
     parser.add_argument(
@@ -248,12 +248,12 @@ def eval_classifier(args, train_dict, test_dict, features, score_fn):
 
 def get_data_path_from_features(args=None, data_path_arg=None):
     features = get_features_from_params(args, allow_all_feats=True)
-    if args is None and data_path_arg is None:
-        data_path = ""
-    elif data_path_arg is not None:
+    if data_path_arg is not None:
         data_path = data_path_arg
-    else:
+    elif args.data_path is not None:
         data_path = args.data_path
+    else:
+        data_path = ""
     prefix = ""
     suffix = ""
     if "oversample" in features:
@@ -315,7 +315,7 @@ def main(args):
 
     eval_data_path = None
     if args.eval_data_path is not None:
-        eval_data_path = get_data_path_from_features(data_path_arg=args.eval_data_path)
+        eval_data_path = get_data_path_from_features(args, data_path_arg=args.eval_data_path)
         print(f"Loading evaluation data from {eval_data_path}")
 
     features = get_features_from_params(args, allow_all_feats=False)

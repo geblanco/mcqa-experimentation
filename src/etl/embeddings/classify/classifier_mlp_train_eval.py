@@ -1,5 +1,6 @@
 import numpy as np
 
+from tqdm import tqdm
 from sklearn.metrics import classification_report
 
 from dataset_class import Dataset, EmbeddingsDataset
@@ -124,7 +125,10 @@ def scatter_train_classifier(
 
     classifier.set_score_fn(score_fn)
     train_dict.prepare_for_train(feature_set)
-    for epoch in range(1, train_epochs + 1):
+    iterator = tqdm(
+        range(1, train_epochs + 1), desc=f"Training", total=train_epochs
+    )
+    for epoch in iterator:
         classifier.model.train()
         epoch_loss = 0
         epoch_acc = 0

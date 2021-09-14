@@ -20,6 +20,7 @@ stages:
         -P corrections_strategy=${item.strategy}
         -P corrections_no_answer_text="${item.no_answer_text}"
         -P evaluation_nbest_predictions=data/metrics/model_corrections/${key}/${item.corrections_split_name}_nbest_predictions.json
+        -P evaluation_split=${item.corrections_split}
         -P evaluation_output=data/metrics/model_corrections/${key}/scores.json
         -P evaluation_task=${item.task}
         -P evaluation_model_nbest_predictions=data/results/bert-train-${key}/${item.corrections_split_name}_nbest_predictions.json
@@ -34,4 +35,3 @@ stages:
             - classification
             - hyper-search
       # should add outputs and no cache?
-
