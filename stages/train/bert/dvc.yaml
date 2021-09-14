@@ -19,6 +19,8 @@ stages:
       # avoid cycles
       - data/${item.data}/${item.files[0]}
       - data/${item.data}/${item.files[1]}
+      # we could add files[2], check if array can be passed here,
+      # to avoid manually scripting the position in the array
       params:
       - params/model-params.yaml:
         - ${item.params-key}.train

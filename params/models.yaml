@@ -1,9 +1,10 @@
 data:
   quail:
-    classification_split: dev
-    classification_train_embeddings: quail-train
-    classification_eval_embeddings: quail-dev
-    corrections_embeddings: quail-dev
+    classification_train_embeddings: quail-dev
+    classification_eval_embeddings: quail-test
+    corrections_embeddings: quail-test
+    corrections_split: test
+    corrections_split_name: eval
     params-key: quail
     strategy: "no_answer"
     no_answer_text: "not enough information"
@@ -14,10 +15,11 @@ data:
       - train.json
       - dev.json
   quail-no-empty-answers:
-    classification_split: dev
-    classification_train_embeddings: quail-no-empty-answers-train
-    classification_eval_embeddings: quail-no-empty-answers-dev
-    corrections_embeddings: quail-no-empty-answers-dev
+    classification_train_embeddings: quail-no-empty-answers-dev
+    classification_eval_embeddings: quail-no-empty-answers-test
+    corrections_embeddings: quail-no-empty-answers-test
+    corrections_split: test
+    corrections_split_name: eval
     params-key: quail
     strategy: "empty_answer"
     # unnecessary, just for completness
@@ -29,10 +31,11 @@ data:
       - train.json
       - dev.json
   race:
-    classification_split: dev
-    classification_train_embeddings: race-train
-    classification_eval_embeddings: race-dev
-    corrections_embeddings: race-dev
+    classification_train_embeddings: race-dev
+    classification_eval_embeddings: race-test
+    corrections_embeddings: race-test
+    corrections_split: test
+    corrections_split_name: eval
     params-key: race
     strategy: "empty_answer"
     # unnecessary, just for completness
@@ -44,10 +47,11 @@ data:
       - train.json
       - dev.json
   race-with-empty-answers:
-    classification_split: dev
-    classification_train_embeddings: race-with-empty-answers-train
-    classification_eval_embeddings: race-with-empty-answers-dev
-    corrections_embeddings: race-with-empty-answers-dev
+    classification_train_embeddings: race-with-empty-answers-dev
+    classification_eval_embeddings: race-with-empty-answers-test
+    corrections_embeddings: race-with-empty-answers-test
+    corrections_split: test
+    corrections_split_name: eval
     params-key: race
     strategy: "no_answer"
     no_answer_text: "not enough information"

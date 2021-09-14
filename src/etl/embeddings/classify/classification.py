@@ -313,6 +313,7 @@ def main(args):
     data_path = get_data_path_from_features(args)
     print(f"Loading data from {data_path}")
 
+    eval_data_path = None
     if args.eval_data_path is not None:
         eval_data_path = get_data_path_from_features(data_path_arg=args.eval_data_path)
         print(f"Loading evaluation data from {eval_data_path}")
@@ -358,6 +359,8 @@ def main(args):
         )
         save_classifier(classifier, args.output_dir)
         save_args(args, args.output_dir)
+        # ToDo := check if artifact_path is correct or should be get with
+        #   get_save_load_name
         artifact_path = "_".join(features) + "_classifier"
         model_name = os.path.basename(args.data_path)
         mlflow.sklearn.log_model(

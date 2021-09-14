@@ -7,7 +7,7 @@ entry_points:
       eval_embeddings_path: string
       classifier_dir: string
       metrics_dir: string
-    command: "python src/etl/embeddings/classify/classification_stub.py
+    command: "python src/etl/embeddings/classify/classification.py
       --data_path {train_embeddings_path}
       --eval_data_path {eval_embeddings_path}
       -o {classifier_dir}
@@ -22,7 +22,7 @@ entry_points:
       split: string
       strategy: string
       no_answer_text: string
-    command: "python src/etl/embeddings/transform/correct_predictions_stub.py
+    command: "python src/etl/embeddings/transform/correct_predictions.py
       -c {classifier_dir}
       -e {embeddings_path}
       -o {output_dir}
@@ -30,13 +30,27 @@ entry_points:
       -s {split}
       --strategy {strategy}
       --no_answer_text {no_answer_text}"
+  # Add utility function
   evaluate_corrections:
     parameters:
       dataset: string
       nbest_predictions: string
       output: string
       task: {type: string, default: "generic"}
-    command: "python src/mcqa_utils_stub.py
+    command: "mcqa_utils
+      -d {dataset}
+      -n {nbest_predictions}
+     --task {task}
+     -o {task}
+     -m C_at_1 avg
+     --save_mlflow"
+  evaluate_model:
+    parameters:
+      dataset: string
+      nbest_predictions: string
+      output: string
+      task: {type: string, default: "generic"}
+    command: "mcqa_utils
       -d {dataset}
       -n {nbest_predictions}
      --task {task}

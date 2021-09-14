@@ -82,7 +82,7 @@ def run_correction_step(tracking_client, experiment_id, params):
         return tracking_client.get_run(p.run_id) if succeeded else None
 
 
-def run_evaluation_step(tracking_client, experiment_id, params):
+def run_class_evaluation_step(tracking_client, experiment_id, params):
     # ToDo := Correctly log metrics
     with mlflow.start_run(nested=True) as child_run:
         # run the evaluation Step and wait it finishes
@@ -104,6 +104,28 @@ def run_evaluation_step(tracking_client, experiment_id, params):
         return tracking_client.get_run(p.run_id) if succeeded else None
 
 
+def run_model_evaluation_step(tracking_client, experiment_id, params):
+    # ToDo := Correctly log metrics
+    with mlflow.start_run(nested=True) as child_run:
+        # run the evaluation Step and wait it finishes
+        p = mlflow.projects.run(
+            uri=".",
+            entry_point="evaluate_model",
+            run_id=child_run.info.run_id,
+            parameters={
+                "dataset": params["dataset"],
+                "nbest_predictions": params["evaluation_model_nbest_predictions"],  # noqa: E501
+                "output": params["evaluation_model_output"],
+                "task": params["evaluation_task"],
+            },
+            experiment_id=experiment_id,
+            use_conda=False,
+            synchronous=False
+        )
+        succeeded = p.wait()
+        return tracking_client.get_run(p.run_id) if succeeded else None
+
+
 def grid(params):
     if "hyper-search" in params and "grid" in params["hyper-search"]:
         for combination in params["hyper-search"]["grid"]:
@@ -115,7 +137,12 @@ def main(args):
     params = yaml.safe_load(open(args.params_file, "r"))
     param_set_file = tempfile.mktemp()
     steps_params.update(params_file=param_set_file)
-    steps = [run_classification_step, run_correction_step, run_evaluation_step]
+    steps = [
+        run_classification_step,
+        run_correction_step,
+        run_class_evaluation_step,
+        run_model_evaluation_step,
+    ]
 
     tracking_client = mlflow.tracking.MlflowClient()
     with mlflow.start_run() as run:
