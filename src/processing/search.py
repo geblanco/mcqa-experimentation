@@ -33,7 +33,7 @@ def parse_args():
     return args
 
 
-def run_classification_step(tracking_client, experiment_id, params):
+def run_classification_step(tracking_client, experiment_id, params, run_name):
     # ToDo := Correctly log metrics
     with mlflow.start_run(nested=True) as child_run:
         # run the classification Step and wait it finishes
@@ -49,6 +49,7 @@ def run_classification_step(tracking_client, experiment_id, params):
                 "params_file": params["params_file"]
             },
             experiment_id=experiment_id,
+            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -56,7 +57,7 @@ def run_classification_step(tracking_client, experiment_id, params):
         return tracking_client.get_run(p.run_id) if succeeded else None
 
 
-def run_correction_step(tracking_client, experiment_id, params):
+def run_correction_step(tracking_client, experiment_id, params, run_name):
     step_params = {
         "classifier_dir": params["classifier_dir"],
         "embeddings_path": params["corrections_embeddings_path"],
@@ -68,6 +69,8 @@ def run_correction_step(tracking_client, experiment_id, params):
     }
     if params["corrections_strategy"] == "no_answer":
         step_params.update(no_answer_text=params["corrections_no_answer_text"])
+    else:
+        step_params.update(no_answer_text=None)
 
     # ToDo := Correctly log metrics
     with mlflow.start_run(nested=True) as child_run:
@@ -78,6 +81,7 @@ def run_correction_step(tracking_client, experiment_id, params):
             run_id=child_run.info.run_id,
             parameters=step_params,
             experiment_id=experiment_id,
+            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -85,7 +89,7 @@ def run_correction_step(tracking_client, experiment_id, params):
         return tracking_client.get_run(p.run_id) if succeeded else None
 
 
-def run_class_evaluation_step(tracking_client, experiment_id, params):
+def run_class_eval_step(tracking_client, experiment_id, params, run_name):
     # ToDo := Correctly log metrics
     with mlflow.start_run(nested=True) as child_run:
         # run the evaluation Step and wait it finishes
@@ -101,6 +105,7 @@ def run_class_evaluation_step(tracking_client, experiment_id, params):
                 "task": params["evaluation_task"],
             },
             experiment_id=experiment_id,
+            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -108,7 +113,7 @@ def run_class_evaluation_step(tracking_client, experiment_id, params):
         return tracking_client.get_run(p.run_id) if succeeded else None
 
 
-def run_model_evaluation_step(tracking_client, experiment_id, params):
+def run_model_eval_step(tracking_client, experiment_id, params, run_name):
     # ToDo := Correctly log metrics
     with mlflow.start_run(nested=True) as child_run:
         # run the evaluation Step and wait it finishes
@@ -124,6 +129,7 @@ def run_model_evaluation_step(tracking_client, experiment_id, params):
                 "task": params["evaluation_task"],
             },
             experiment_id=experiment_id,
+            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -145,17 +151,19 @@ def main(args):
     steps = [
         run_classification_step,
         run_correction_step,
-        run_class_evaluation_step,
-        run_model_evaluation_step,
+        run_class_eval_step,
+        run_model_eval_step,
     ]
 
-    tracking_client = mlflow.tracking.MlflowClient()
+    client = mlflow.tracking.MlflowClient()
     with mlflow.start_run() as run:
-        experiment_id = run.info.experiment_id
+        exp_id = run.info.experiment_id
         for param_set in grid(params):
+            run_name = param_set["classification"]["pipeline"]
+            run_name += "_" + "_".join(param_set["features"])
             yaml.safe_dump(param_set, open(param_set_file, "w"))
             for step in steps:
-                step_result = step(tracking_client, experiment_id, steps_params)
+                step_result = step(client, exp_id, steps_params, run_name)
                 if step_result is not None:
                     mlflow.log_metrics(step_result.data.metrics)
                 else:
