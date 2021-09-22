@@ -1,0 +1,165 @@
+schema: '2.0'
+stages:
+  classification@quail-no-empty-answers:
+    cmd: export MLFLOW_TRACKING_URI="http://0.0.0.0:5000"; mlflow run -e main . --no-conda
+      -P classifier_dir=/data/gblanco/classification/quail-no-empty-answers -P dataset=data/quail_no_empty_answers
+      -P params_file=params/classification-params.yaml -P classification_train_embeddings_path=/backup/gblanco/datasets/embeddings/quail-no-empty-answers-dev
+      -P classification_eval_embeddings_path=/backup/gblanco/datasets/embeddings/quail-no-empty-answers-test
+      -P classification_metrics_dir=data/metrics/classification/quail-no-empty-answers
+      -P corrections_embeddings_path=/backup/gblanco/datasets/embeddings/quail-no-empty-answers-test
+      -P corrections_output_dir=data/metrics/model_corrections/quail-no-empty-answers
+      -P corrections_split=test -P corrections_strategy=empty_answer -P corrections_no_answer_text="not
+      enough information" -P evaluation_nbest_predictions=data/metrics/model_corrections/quail-no-empty-answers/test_nbest_predictions.json
+      -P evaluation_split=test -P evaluation_output=data/metrics/model_corrections/quail-no-empty-answers/scores.json
+      -P evaluation_task=generic -P evaluation_model_nbest_predictions=data/results/bert-train-quail-no-empty-answers/test_nbest_predictions.json
+      -P evaluation_model_output=data/metrics/bert-train-quail-no-empty-answers/scores.json
+      -P evaluation_utility_function="0 -0.50 -1"
+    deps:
+    - path: data/quail_no_empty_answers
+      md5: 9f36f7d899ca114755e794853d17b62c.dir
+      size: 115772772
+      nfiles: 10
+    - path: src/etl/embeddings/classify/classification.py
+      md5: 6ecdc866091be4b8665b0b526256c59e
+      size: 12218
+    - path: src/etl/embeddings/transform/correct_predictions.py
+      md5: 27ea89438b0782d23e24029ad2e32fdf
+      size: 10487
+    params:
+      params/classification-params.yaml:
+        classification:
+          iterations: 50
+          popsize: 10
+          selection: 10
+          early_stop: 6
+          balanced: false
+          memory: 64
+          autogoal: false
+          pipeline: mlp
+          sweep_features: false
+          seed: 42
+          test_size: 0.2
+          metric: weighted_f1
+          multi_layer:
+            lr: 0.001
+            epochs: 150
+            batch_size: 100
+        features:
+          normalization: false
+          oversample: false
+          embeddings: false
+          logits: true
+          contexts: false
+          question: false
+          endings: false
+        hyper-search:
+          grid:
+          - pipeline: mlp
+            logits: true
+          - pipeline: mlp
+            logits: true
+            endings: true
+          - pipeline: mlp
+            logits: true
+            question: true
+          - pipeline: logreg
+            contexts: true
+          - pipeline: mlp
+            contexts: true
+            question: true
+          - pipeline: mlp
+            embeddings: true
+            logits: true
+            endings: true
+          - pipeline: mlp
+            logits: true
+            question: true
+            endings: true
+          - pipeline: mlp
+            contexts: true
+            endings: true
+          - pipeline: mlp
+            contexts: true
+            question: true
+            endings: true
+  classification@quail:
+    cmd: export MLFLOW_TRACKING_URI="http://0.0.0.0:5000"; mlflow run -e main . --no-conda
+      -P classifier_dir=/data/gblanco/classification/quail -P dataset=data/quail_race_fmt
+      -P params_file=params/classification-params.yaml -P classification_train_embeddings_path=/backup/gblanco/datasets/embeddings/quail-dev
+      -P classification_eval_embeddings_path=/backup/gblanco/datasets/embeddings/quail-test
+      -P classification_metrics_dir=data/metrics/classification/quail -P corrections_embeddings_path=/backup/gblanco/datasets/embeddings/quail-test
+      -P corrections_output_dir=data/metrics/model_corrections/quail -P corrections_split=test
+      -P corrections_strategy=no_answer -P corrections_no_answer_text="not enough
+      information" -P evaluation_nbest_predictions=data/metrics/model_corrections/quail/test_nbest_predictions.json
+      -P evaluation_split=test -P evaluation_output=data/metrics/model_corrections/quail/scores.json
+      -P evaluation_task=generic -P evaluation_model_nbest_predictions=data/results/bert-train-quail/test_nbest_predictions.json
+      -P evaluation_model_output=data/metrics/bert-train-quail/scores.json -P evaluation_utility_function="0
+      -0.33 -1"
+    deps:
+    - path: data/quail_race_fmt
+      md5: b10a55ed7679e1157226da34aa0e1602.dir
+      size: 172019959
+      nfiles: 10
+    - path: src/etl/embeddings/classify/classification.py
+      md5: 6ecdc866091be4b8665b0b526256c59e
+      size: 12218
+    - path: src/etl/embeddings/transform/correct_predictions.py
+      md5: 27ea89438b0782d23e24029ad2e32fdf
+      size: 10487
+    params:
+      params/classification-params.yaml:
+        classification:
+          iterations: 50
+          popsize: 10
+          selection: 10
+          early_stop: 6
+          balanced: false
+          memory: 64
+          autogoal: false
+          pipeline: mlp
+          sweep_features: false
+          seed: 42
+          test_size: 0.2
+          metric: weighted_f1
+          multi_layer:
+            lr: 0.001
+            epochs: 150
+            batch_size: 100
+        features:
+          normalization: false
+          oversample: false
+          embeddings: false
+          logits: true
+          contexts: false
+          question: false
+          endings: false
+        hyper-search:
+          grid:
+          - pipeline: mlp
+            logits: true
+          - pipeline: mlp
+            logits: true
+            endings: true
+          - pipeline: mlp
+            logits: true
+            question: true
+          - pipeline: logreg
+            contexts: true
+          - pipeline: mlp
+            contexts: true
+            question: true
+          - pipeline: mlp
+            embeddings: true
+            logits: true
+            endings: true
+          - pipeline: mlp
+            logits: true
+            question: true
+            endings: true
+          - pipeline: mlp
+            contexts: true
+            endings: true
+          - pipeline: mlp
+            contexts: true
+            question: true
+            endings: true

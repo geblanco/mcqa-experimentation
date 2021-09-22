@@ -8,6 +8,7 @@ data:
     params-key: quail
     strategy: "no_answer"
     no_answer_text: "not enough information"
+    utility_function: "0 -0.33 -1"
     task: generic
     data: quail_race_fmt
     model: bert-base-uncased
@@ -24,40 +25,43 @@ data:
     strategy: "empty_answer"
     # unnecessary, just for completness
     no_answer_text: "not enough information"
+    utility_function: "0 -0.50 -1"
     task: generic
     data: quail_no_empty_answers
     model: bert-base-uncased
     files:
       - train.json
       - dev.json
-  race:
-    classification_train_embeddings: race-dev
-    classification_eval_embeddings: race-test
-    corrections_embeddings: race-test
-    corrections_split: test
-    corrections_split_name: test
-    params-key: race
-    strategy: "empty_answer"
-    # unnecessary, just for completness
-    no_answer_text: "not enough information"
-    task: generic
-    data: race
-    model: bert-base-uncased
-    files:
-      - train.json
-      - dev.json
-  race-with-empty-answers:
-    classification_train_embeddings: race-with-empty-answers-dev
-    classification_eval_embeddings: race-with-empty-answers-test
-    corrections_embeddings: race-with-empty-answers-test
-    corrections_split: test
-    corrections_split_name: test
-    params-key: race
-    strategy: "no_answer"
-    no_answer_text: "not enough information"
-    task: generic
-    data: race_with_empty_answers
-    model: bert-base-uncased
-    files:
-      - train.json
-      - dev.json
+  # race:
+  #   classification_train_embeddings: race-dev
+  #   classification_eval_embeddings: race-test
+  #   corrections_embeddings: race-test
+  #   corrections_split: test
+  #   corrections_split_name: test
+  #   params-key: race
+  #   strategy: "empty_answer"
+  #   # unnecessary, just for completness
+  #   no_answer_text: "not enough information"
+  #   utility_function: "0 -0.33 -1"
+  #   task: generic
+  #   data: race
+  #   model: bert-base-uncased
+  #   files:
+  #     - train.json
+  #     - dev.json
+  # race-with-empty-answers:
+  #   classification_train_embeddings: race-with-empty-answers-dev
+  #   classification_eval_embeddings: race-with-empty-answers-test
+  #   corrections_embeddings: race-with-empty-answers-test
+  #   corrections_split: test
+  #   corrections_split_name: test
+  #   params-key: race
+  #   strategy: "no_answer"
+  #   no_answer_text: "not enough information"
+  #   utility_function: "0 -0.33 -1"
+  #   task: generic
+  #   data: race_with_empty_answers
+  #   model: bert-base-uncased
+  #   files:
+  #     - train.json
+  #     - dev.json

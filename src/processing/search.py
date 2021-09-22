@@ -1,13 +1,11 @@
-# import os
-# os.chdir(os.path.abspath("../.."))
-
+import os
 import yaml
 import argparse
 import tempfile
 from hyperp_utils import combination_to_params
 
+import mlflow
 import mlflow.projects
-from mlflow.tracking.client import MlflowClient
 
 
 def parse_args():
@@ -29,27 +27,29 @@ def parse_args():
     parser.add_argument("--evaluation_task", type=str)
     parser.add_argument("--evaluation_model_nbest_predictions", type=str)
     parser.add_argument("--evaluation_model_output", type=str)
+    parser.add_argument("--evaluation_utility_function", type=str)
     args, unk = parser.parse_known_args()
     return args
 
 
 def run_classification_step(tracking_client, experiment_id, params, run_name):
+    train_embeddings_path = params["classification_train_embeddings_path"]
+    eval_embeddings_path = params["classification_eval_embeddings_path"]
     # ToDo := Correctly log metrics
-    with mlflow.start_run(nested=True) as child_run:
+    with mlflow.start_run(nested=True, run_name=run_name) as child_run:
         # run the classification Step and wait it finishes
         p = mlflow.projects.run(
             uri=".",
             entry_point="classification",
             run_id=child_run.info.run_id,
             parameters={
-                "train_embeddings_path": params["classification_train_embeddings_path"],
-                "eval_embeddings_path": params["classification_eval_embeddings_path"],
+                "train_embeddings_path": train_embeddings_path,
+                "eval_embeddings_path": eval_embeddings_path,
                 "classifier_dir": params["classifier_dir"],
                 "metrics_dir": params["classification_metrics_dir"],
                 "params_file": params["params_file"]
             },
             experiment_id=experiment_id,
-            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -73,7 +73,7 @@ def run_correction_step(tracking_client, experiment_id, params, run_name):
         step_params.update(no_answer_text=None)
 
     # ToDo := Correctly log metrics
-    with mlflow.start_run(nested=True) as child_run:
+    with mlflow.start_run(nested=True, run_name=run_name) as child_run:
         # run the correction Step and wait it finishes
         p = mlflow.projects.run(
             uri=".",
@@ -81,7 +81,6 @@ def run_correction_step(tracking_client, experiment_id, params, run_name):
             run_id=child_run.info.run_id,
             parameters=step_params,
             experiment_id=experiment_id,
-            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -90,8 +89,9 @@ def run_correction_step(tracking_client, experiment_id, params, run_name):
 
 
 def run_class_eval_step(tracking_client, experiment_id, params, run_name):
+    run_name = f"classifier_{run_name}"
     # ToDo := Correctly log metrics
-    with mlflow.start_run(nested=True) as child_run:
+    with mlflow.start_run(nested=True, run_name=run_name) as child_run:
         # run the evaluation Step and wait it finishes
         p = mlflow.projects.run(
             uri=".",
@@ -102,10 +102,10 @@ def run_class_eval_step(tracking_client, experiment_id, params, run_name):
                 "nbest_predictions": params["evaluation_nbest_predictions"],
                 "split": params["evaluation_split"],
                 "output": params["evaluation_output"],
+                "utility_function": params["evaluation_utility_function"],
                 "task": params["evaluation_task"],
             },
             experiment_id=experiment_id,
-            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -114,8 +114,9 @@ def run_class_eval_step(tracking_client, experiment_id, params, run_name):
 
 
 def run_model_eval_step(tracking_client, experiment_id, params, run_name):
+    run_name = f"model_{run_name}"
     # ToDo := Correctly log metrics
-    with mlflow.start_run(nested=True) as child_run:
+    with mlflow.start_run(nested=True, run_name=run_name) as child_run:
         # run the evaluation Step and wait it finishes
         p = mlflow.projects.run(
             uri=".",
@@ -126,10 +127,10 @@ def run_model_eval_step(tracking_client, experiment_id, params, run_name):
                 "nbest_predictions": params["evaluation_model_nbest_predictions"],  # noqa: E501
                 "split": params["evaluation_split"],
                 "output": params["evaluation_model_output"],
+                "utility_function": params["evaluation_utility_function"],
                 "task": params["evaluation_task"],
             },
             experiment_id=experiment_id,
-            experiment_name=run_name,
             use_conda=False,
             synchronous=False
         )
@@ -141,6 +142,12 @@ def grid(params):
     if "hyper-search" in params and "grid" in params["hyper-search"]:
         for combination in params["hyper-search"]["grid"]:
             yield combination_to_params(combination)
+
+
+def name_from_param_set(param_set):
+    name = param_set["classification"]["pipeline"]
+    name += "_" + "_".join(param_set["features"])
+    return name
 
 
 def main(args):
@@ -155,12 +162,12 @@ def main(args):
         run_model_eval_step,
     ]
 
+    experiment_name = os.path.basename(args.dataset)
     client = mlflow.tracking.MlflowClient()
-    with mlflow.start_run() as run:
-        exp_id = run.info.experiment_id
+    with mlflow.start_run(run_name=experiment_name) as run:
         for param_set in grid(params):
-            run_name = param_set["classification"]["pipeline"]
-            run_name += "_" + "_".join(param_set["features"])
+            run_name = experiment_name + "_" + name_from_param_set(param_set)
+            exp_id = run.info.experiment_id
             yaml.safe_dump(param_set, open(param_set_file, "w"))
             for step in steps:
                 step_result = step(client, exp_id, steps_params, run_name)

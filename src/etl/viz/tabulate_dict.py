@@ -16,12 +16,20 @@ def parse_flags():
 
 
 def print_file(file_name, digits):
-    report = ""
     data = json.load(open(file_name, "r"))
+    return print_dict(data, digits)
+
+
+def print_dict(data, digits):
+    report = ""
     width = max([len(cn) for cn in data] + [digits])
-    row = "{:>{width}s}\t{:>9.{digits}f}\n"
+    num_row = "{:>{width}s}\t{:>9.{digits}f}\n"
+    str_row = "{:>{width}s}\t{:s}\n"
     for key, value in data.items():
-        report += row.format(key, value, width=width, digits=digits)
+        if isinstance(value, (float, int)):
+            report += num_row.format(key, value, width=width, digits=digits)
+        else:
+            report += str_row.format(key, value, width=width)
     return report
 
 

@@ -25,6 +25,7 @@ stages:
         -P evaluation_task=${item.task}
         -P evaluation_model_nbest_predictions=data/results/bert-train-${key}/${item.corrections_split_name}_nbest_predictions.json
         -P evaluation_model_output=data/metrics/bert-train-${key}/scores.json
+        -P evaluation_utility_function="${item.utility_function}"
       deps:
         - data/${item.data}
         - src/etl/embeddings/classify/classification.py
