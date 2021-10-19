@@ -72,7 +72,7 @@ def save_classifier(classifier, output_dir, feature_set=None):
     print(f"Saved classifier to: {classifier_fname}")
 
 
-def load_classifier(output_dir, feature_set=None):
+def load_local_classifier(output_dir, feature_set=None):
     output_dir_path = Path(output_dir)
     if not output_dir_path.exists():
         raise RuntimeError(
@@ -89,3 +89,15 @@ def load_classifier(output_dir, feature_set=None):
     classifier = Unpickler(open(classifier_fname, "rb")).load()
     print(f"Loaded classifier from: {classifier_fname}")
     return classifier
+
+
+def load_mlflow_classifier(output_dir):
+    import mlflow.pyfunc
+    return mlflow.pyfunc.load_model(model_uri=output_dir)
+
+
+def load_classifier(output_dir, feature_set=None):
+    if output_dir.startswith("models:/"):
+        return load_mlflow_classifier(output_dir)
+    else:
+        return load_local_classifier(output_dir, feature_set)

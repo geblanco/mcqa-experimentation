@@ -1,5 +1,6 @@
 import os
 import yaml
+import json
 import argparse
 import tempfile
 from hyperp_utils import combination_to_params
@@ -30,6 +31,20 @@ def parse_args():
     parser.add_argument("--evaluation_utility_function", type=str)
     args, unk = parser.parse_known_args()
     return args
+
+
+def update_classifier_metrics(params):
+    model_metrics = json.load(open(params["evaluation_model_output"]))
+    classifier_metrics = json.load(open(params["evaluation_output"]))
+    model_correct = model_metrics["avg_correct"]
+    model_incorrect = model_metrics["avg_incorrect"]
+    class_correct = classifier_metrics["C_at_1_correct"]
+    class_incorrect = classifier_metrics["C_at_1_incorrect"]
+    classifier_metrics.update({
+        "C_at_1_unanswered_correct": model_correct - class_correct,
+        "C_at_1_unanswered_incorrect": model_incorrect - class_incorrect
+    })
+    return classifier_metrics
 
 
 def run_classification_step(tracking_client, experiment_id, params, run_name):
@@ -88,31 +103,6 @@ def run_correction_step(tracking_client, experiment_id, params, run_name):
         return tracking_client.get_run(p.run_id) if succeeded else None
 
 
-def run_class_eval_step(tracking_client, experiment_id, params, run_name):
-    run_name = f"classifier_{run_name}"
-    # ToDo := Correctly log metrics
-    with mlflow.start_run(nested=True, run_name=run_name) as child_run:
-        # run the evaluation Step and wait it finishes
-        p = mlflow.projects.run(
-            uri=".",
-            entry_point="evaluate_corrections",
-            run_id=child_run.info.run_id,
-            parameters={
-                "dataset": params["dataset"],
-                "nbest_predictions": params["evaluation_nbest_predictions"],
-                "split": params["evaluation_split"],
-                "output": params["evaluation_output"],
-                "utility_function": params["evaluation_utility_function"],
-                "task": params["evaluation_task"],
-            },
-            experiment_id=experiment_id,
-            use_conda=False,
-            synchronous=False
-        )
-        succeeded = p.wait()
-        return tracking_client.get_run(p.run_id) if succeeded else None
-
-
 def run_model_eval_step(tracking_client, experiment_id, params, run_name):
     run_name = f"model_{run_name}"
     # ToDo := Correctly log metrics
@@ -138,6 +128,35 @@ def run_model_eval_step(tracking_client, experiment_id, params, run_name):
         return tracking_client.get_run(p.run_id) if succeeded else None
 
 
+# ToDo := merge evaluations to get unans_{correct,incorrect}
+def run_class_eval_step(tracking_client, experiment_id, params, run_name):
+    run_name = f"classifier_{run_name}"
+    # ToDo := Correctly log metrics
+    with mlflow.start_run(nested=True, run_name=run_name) as child_run:
+        # run the evaluation Step and wait it finishes
+        p = mlflow.projects.run(
+            uri=".",
+            entry_point="evaluate_corrections",
+            run_id=child_run.info.run_id,
+            parameters={
+                "dataset": params["dataset"],
+                "nbest_predictions": params["evaluation_nbest_predictions"],
+                "split": params["evaluation_split"],
+                "output": params["evaluation_output"],
+                "utility_function": params["evaluation_utility_function"],
+                "task": params["evaluation_task"],
+            },
+            experiment_id=experiment_id,
+            use_conda=False,
+            synchronous=False
+        )
+        succeeded = p.wait()
+        # update model eval with classifier eval
+        metrics = update_classifier_metrics(params):
+        mlflow.log_metrics(metrics)
+        return tracking_client.get_run(p.run_id) if succeeded else None
+
+
 def grid(params):
     if "hyper-search" in params and "grid" in params["hyper-search"]:
         for combination in params["hyper-search"]["grid"]:
@@ -158,8 +177,8 @@ def main(args):
     steps = [
         run_classification_step,
         run_correction_step,
-        run_class_eval_step,
         run_model_eval_step,
+        run_class_eval_step,
     ]
 
     experiment_name = os.path.basename(args.dataset)
